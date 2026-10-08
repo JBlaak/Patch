@@ -1,6 +1,6 @@
 {
   "name": "@jblaak/patch",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Patch, a small animated mint blob friend for empty-state screens.",
   "private": true,
   "type": "module",

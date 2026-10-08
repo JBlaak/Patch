@@ -8,7 +8,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.1.0"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.2.0"
 }
 ```
 
@@ -53,8 +53,14 @@ interface PatchHandle {
   destroy(): void;                 // remove Patch's DOM
 }
 
-function mountPatch(container: HTMLElement): PatchHandle;
+interface PatchOptions {
+  onPoke?: () => void;             // makes Patch a button; called on click, tap or Enter/Space
+}
+
+function mountPatch(container: HTMLElement, options?: PatchOptions): PatchHandle;
 ```
+
+With `onPoke`, Patch is a real `<button aria-label="Poke Patch">` that squishes on hover and press; answer the poke with another `appear`, and keyboard focus stays on Patch across it. `--patch-focus` sets the focus ring colour (default: the body colour).
 
 Nothing shows until the first `appear`. A move plays once per `appear`; breathing and blinking loop.
 

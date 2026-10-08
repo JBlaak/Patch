@@ -20,7 +20,10 @@ fill('mood', MOODS, 'happy');
 fill('sky', SKIES, 'clear');
 fill('time', TIMES, 'day');
 
-const patch = mountPatch(stage);
+// Poking replays the chosen scene with a wobble, the way a host would answer it.
+const patch = mountPatch(stage, {
+  onPoke: () => patch.appear({ ...scene(), move: 'jelly', line: 'Hey, that tickles!' }),
+});
 
 function scene(): PatchScene {
   const data = new FormData(form);

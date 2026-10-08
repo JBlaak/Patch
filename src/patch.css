@@ -45,6 +45,31 @@
   --patch-fill: var(--patch-body-tired);
 }
 
+/* ---------- Poking ---------- */
+
+.patch-poke {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 40%;
+  transition: transform 0.18s cubic-bezier(0.3, 1.6, 0.5, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.patch-poke:hover { transform: scale(1.04); }
+.patch-poke:active { transform: scale(0.94, 0.9); transition-duration: 0.06s; }
+
+.patch-poke:focus { outline: none; }
+.patch-poke:focus-visible {
+  outline: 2px solid var(--patch-focus, var(--patch-body));
+  outline-offset: -12px;
+}
+
 /* ---------- Speech bubble ---------- */
 
 .patch-bubble {
@@ -398,6 +423,10 @@
  * hearts, sparks and z's stay hidden at their opacity: 0 rest state).
  */
 @media (prefers-reduced-motion: reduce) {
+  .patch-poke,
+  .patch-poke:hover,
+  .patch-poke:active { transition: none; transform: none; }
+
   .patch,
   .patch * {
     animation: none !important;

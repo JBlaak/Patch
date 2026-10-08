@@ -22,6 +22,14 @@ export interface PatchHandle {
   destroy(): void;
 }
 
+export interface PatchOptions {
+  /**
+   * Called when Patch is clicked, tapped or activated from the keyboard. With
+   * it, Patch is a real button; without it, Patch is decoration only.
+   */
+  onPoke?: () => void;
+}
+
 type Accessory =
   | 'sun'
   | 'shades'
@@ -62,7 +70,7 @@ function mouthFor(mood: PatchMood): Mouth {
  * Mount Patch into `container`. Nothing shows until the first `appear`.
  * Remember to include `@jblaak/patch/patch.css`.
  */
-export function mountPatch(container: HTMLElement): PatchHandle {
+export function mountPatch(container: HTMLElement, options: PatchOptions = {}): PatchHandle {
   const root = document.createElement('div');
   root.className = 'patch';
   container.appendChild(root);
@@ -83,12 +91,22 @@ export function mountPatch(container: HTMLElement): PatchHandle {
       bubble.className = 'patch-bubble';
       bubble.textContent = scene.line;
 
-      const art = document.createElement('div');
+      const art = document.createElement(options.onPoke ? 'button' : 'div');
       art.className = 'patch-art';
       art.innerHTML = patchArt(mouthFor(scene.mood));
+      if (options.onPoke && art instanceof HTMLButtonElement) {
+        art.type = 'button';
+        art.classList.add('patch-poke');
+        art.setAttribute('aria-label', 'Poke Patch');
+        art.addEventListener('click', options.onPoke);
+      }
 
+      // A poke rebuilds the scene; keep keyboard focus on Patch across it.
+      const focused = document.activeElement;
+      const hadFocus = focused instanceof HTMLElement && root.contains(focused) && focused.classList.contains('patch-poke');
       el.append(bubble, art);
       root.replaceChildren(el);
+      if (hadFocus) art.focus();
     },
     destroy() {
       root.remove();
