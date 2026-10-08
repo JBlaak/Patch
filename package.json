@@ -14,7 +14,7 @@
     "src"
   ],
   "scripts": {
-    "preview": "esbuild preview/preview.ts --bundle --format=esm --servedir=preview --outdir=preview/dist",
+    "preview": "esbuild preview/preview.ts --bundle --format=esm --outdir=preview/dist --servedir=preview --serve=127.0.0.1:5199",
     "typecheck": "tsc"
   },
   "devDependencies": {

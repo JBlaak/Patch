@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patch preview</title>
+<link rel="stylesheet" href="dist/preview.css">
+<style>
+  body { margin: 0; font: 14px/1.4 system-ui, sans-serif; background: #141517; color: #ecebe8; }
+  body.light { background: #f6f5f2; color: #1d1e21; }
+  /* Example light theme: what a host would set on .patch. */
+  body.light .patch {
+    --patch-body: #4fae8f;
+    --patch-body-tired: #8bb8a8;
+    --patch-ink: #1d1e21;
+    --patch-cloud: #d4d3cf;
+    --patch-snow: #9a9893;
+    --patch-pole: #85837f;
+    --patch-bubble-bg: #ffffff;
+    --patch-bubble-text: #1d1e21;
+    --patch-bubble-edge: rgba(0, 0, 0, 0.08);
+    --patch-bubble-shadow: rgba(0, 0, 0, 0.18);
+    --patch-shadow: rgba(0, 0, 0, 0.12);
+  }
+  .stage { height: 320px; display: flex; align-items: flex-end; justify-content: center; padding-top: 24px; }
+  form { display: flex; flex-wrap: wrap; gap: 12px 16px; justify-content: center; align-items: end; padding: 24px 16px; }
+  label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; opacity: 0.8; }
+  select, input, button { font: inherit; font-size: 13px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.4); background: transparent; color: inherit; }
+  input[name="line"] { width: 280px; }
+  button { cursor: pointer; padding: 6px 14px; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage"></div>
+<form id="controls">
+  <label>Move <select name="move"></select></label>
+  <label>Mood <select name="mood"></select></label>
+  <label>Sky <select name="sky"></select></label>
+  <label>Time <select name="time"></select></label>
+  <label>Line <input name="line" value="Hi! 2 sessions running smoothly."></label>
+  <button type="submit">Appear</button>
+  <button type="button" id="theme">Light background</button>
+</form>
+<script type="module" src="dist/preview.js"></script>
+</body>
+</html>
