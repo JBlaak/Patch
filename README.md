@@ -8,7 +8,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.2.0"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.3.0"
 }
 ```
 
@@ -54,13 +54,17 @@ interface PatchHandle {
 }
 
 interface PatchOptions {
-  onPoke?: () => void;             // makes Patch a button; called on click, tap or Enter/Space
+  onPoke?: () => void;              // called on click, tap or Enter/Space
+  onGrab?: () => void;              // called when a press turns into a drag
+  onDrop?: (fling: Fling) => void;  // called on let-go; { distance (px), speed (px/ms) }
 }
 
 function mountPatch(container: HTMLElement, options?: PatchOptions): PatchHandle;
 ```
 
-With `onPoke`, Patch is a real `<button aria-label="Poke Patch">` that squishes on hover and press; answer the poke with another `appear`, and keyboard focus stays on Patch across it. `--patch-focus` sets the focus ring colour (default: the body colour).
+With any of these, Patch is a real `<button aria-label="Poke Patch">` that squishes on hover and press; answer a poke with another `appear`, and keyboard focus stays on Patch across it.
+
+Patch can also be dragged: it trails the pointer on a spring, the leash stretches the further it is pulled, it tilts with its direction and stretches with speed, and makes a surprised face. Let go, it springs home with an overshoot and a wobble. A press that moved is a drag, not a poke. Answering `onDrop` with an `appear` does not cut the way home short. With reduced motion Patch still follows the pointer but snaps home without the wobble. `--patch-focus` sets the focus ring colour (default: the body colour).
 
 Nothing shows until the first `appear`. A move plays once per `appear`; breathing and blinking loop.
 

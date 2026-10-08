@@ -55,14 +55,29 @@
   background: none;
   color: inherit;
   font: inherit;
-  cursor: pointer;
+  cursor: grab;
   border-radius: 40%;
-  transition: transform 0.18s cubic-bezier(0.3, 1.6, 0.5, 1);
+  /* The drag owns this element's transform; the hover and press squish go on
+     the art inside it. Grows along the drag rotation's pivot, low in the body. */
+  transform-origin: 50% 70%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-.patch-poke:hover { transform: scale(1.04); }
-.patch-poke:active { transform: scale(0.94, 0.9); transition-duration: 0.06s; }
+.patch-poke .patch-svg {
+  transition: transform 0.18s cubic-bezier(0.3, 1.6, 0.5, 1);
+  transform-origin: 50% 85%;
+}
+.patch-poke:hover .patch-svg { transform: scale(1.04); }
+.patch-poke:active .patch-svg { transform: scale(0.94, 0.9); transition-duration: 0.06s; }
+
+/* Held: surprised, and the press squish gives way to the drag's own stretch. */
+.patch-held .patch-poke { cursor: grabbing; }
+.patch-held .patch-poke:active .patch-svg { transform: scale(1.04); }
+.patch-held .patch-o { animation: none; opacity: 1; }
+.patch-held .patch-smile { animation: none; opacity: 0; }
 
 .patch-poke:focus { outline: none; }
 .patch-poke:focus-visible {
@@ -423,9 +438,9 @@
  * hearts, sparks and z's stay hidden at their opacity: 0 rest state).
  */
 @media (prefers-reduced-motion: reduce) {
-  .patch-poke,
-  .patch-poke:hover,
-  .patch-poke:active { transition: none; transform: none; }
+  .patch-poke .patch-svg,
+  .patch-poke:hover .patch-svg,
+  .patch-poke:active .patch-svg { transition: none; transform: none; }
 
   .patch,
   .patch * {

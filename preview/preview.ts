@@ -23,6 +23,9 @@ fill('time', TIMES, 'day');
 // Poking replays the chosen scene with a wobble, the way a host would answer it.
 const patch = mountPatch(stage, {
   onPoke: () => patch.appear({ ...scene(), move: 'jelly', line: 'Hey, that tickles!' }),
+  onDrop: ({ speed }) => patch.appear(
+    speed > 1.5 ? { ...scene(), move: 'twirl', line: 'Wheee!' } : { ...scene(), move: 'jelly', line: 'Boing!' },
+  ),
 });
 
 function scene(): PatchScene {

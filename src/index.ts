@@ -1,4 +1,7 @@
 import { MOUTH_FLAT, MOUTH_FROWN, MOUTH_SMILE, patchArt, type Mouth } from './art';
+import { makeDraggable, type Fling } from './drag';
+
+export type { Fling } from './drag';
 
 export type PatchMove = 'wave' | 'hop' | 'twirl' | 'peek' | 'doze' | 'jelly' | 'love' | 'stretch';
 export type PatchMood = 'calm' | 'happy' | 'worried' | 'frazzled' | 'tired';
@@ -28,6 +31,13 @@ export interface PatchOptions {
    * it, Patch is a real button; without it, Patch is decoration only.
    */
   onPoke?: () => void;
+  /** Called when Patch is picked up: a press that moved rather than a click. */
+  onGrab?: () => void;
+  /**
+   * Called when Patch is let go, as it starts springing home. Answering with
+   * an `appear` is fine; the way home carries on.
+   */
+  onDrop?: (fling: Fling) => void;
 }
 
 type Accessory =
@@ -74,6 +84,8 @@ export function mountPatch(container: HTMLElement, options: PatchOptions = {}): 
   const root = document.createElement('div');
   root.className = 'patch';
   container.appendChild(root);
+  const interactive = !!(options.onPoke || options.onGrab || options.onDrop);
+  const drag = interactive ? makeDraggable(root, options) : null;
 
   return {
     appear(scene) {
@@ -91,14 +103,16 @@ export function mountPatch(container: HTMLElement, options: PatchOptions = {}): 
       bubble.className = 'patch-bubble';
       bubble.textContent = scene.line;
 
-      const art = document.createElement(options.onPoke ? 'button' : 'div');
+      const art = document.createElement(interactive ? 'button' : 'div');
       art.className = 'patch-art';
       art.innerHTML = patchArt(mouthFor(scene.mood));
-      if (options.onPoke && art instanceof HTMLButtonElement) {
+      if (drag && art instanceof HTMLButtonElement) {
         art.type = 'button';
         art.classList.add('patch-poke');
         art.setAttribute('aria-label', 'Poke Patch');
-        art.addEventListener('click', options.onPoke);
+        // First, so a press that turned into a drag is not also a poke.
+        drag.attach(art);
+        if (options.onPoke) art.addEventListener('click', options.onPoke);
       }
 
       // A poke rebuilds the scene; keep keyboard focus on Patch across it.
@@ -109,6 +123,7 @@ export function mountPatch(container: HTMLElement, options: PatchOptions = {}): 
       if (hadFocus) art.focus();
     },
     destroy() {
+      drag?.destroy();
       root.remove();
     },
   };
