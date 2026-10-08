@@ -8,7 +8,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.3.0"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.3.1"
 }
 ```
 

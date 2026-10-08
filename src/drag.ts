@@ -77,8 +77,8 @@ export function makeDraggable(root: HTMLElement, hooks: DragHooks) {
   function velocity(now: number): { vx: number; vy: number } {
     const recent = samples.filter(s => now - s.t <= VELOCITY_WINDOW_MS);
     if (recent.length < 2) return { vx: 0, vy: 0 };
-    const a = recent[0];
-    const b = recent[recent.length - 1];
+    const a = recent[0]!;
+    const b = recent[recent.length - 1]!;
     const dt = Math.max(1, b.t - a.t);
     return { vx: (b.x - a.x) / dt, vy: (b.y - a.y) / dt };
   }
