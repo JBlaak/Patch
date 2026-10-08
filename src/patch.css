@@ -1,0 +1,405 @@
+/*
+ * Patch. Every class starts with `patch-` and every keyframe with `patch-`,
+ * so nothing collides with the host's CSS. Colours are custom properties with
+ * dark defaults; the host overrides them on `.patch` (or any ancestor rule
+ * that wins) to fit its own theme.
+ */
+
+.patch {
+  --patch-body: #8fd8bf;
+  --patch-body-tired: #5e9e88;
+  --patch-ink: #141517;
+  --patch-cheek: #eeab94;
+  --patch-sun: #f0cf7e;
+  --patch-rain: #9cc5e8;
+  --patch-scarf: #ee8b8b;
+  --patch-cap: #c8b8e8;
+  --patch-cloud: #3a3b40;
+  --patch-snow: #ecebe8;
+  --patch-pole: #a09e99;
+  --patch-highlight: rgba(255, 255, 255, 0.35);
+  --patch-bubble-bg: #212226;
+  --patch-bubble-text: #ecebe8;
+  --patch-bubble-edge: rgba(255, 255, 255, 0.07);
+  --patch-bubble-shadow: rgba(0, 0, 0, 0.7);
+  --patch-shadow: rgba(0, 0, 0, 0.35);
+  --patch-font: inherit;
+
+  /* Internal: the body colour in use, dimmed when Patch is tired. */
+  --patch-fill: var(--patch-body);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.patch-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.patch-scene.patch-m-tired {
+  --patch-fill: var(--patch-body-tired);
+}
+
+/* ---------- Speech bubble ---------- */
+
+.patch-bubble {
+  position: relative;
+  max-width: 320px;
+  box-sizing: border-box;
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: var(--patch-bubble-bg);
+  box-shadow:
+    inset 0 0 0 1px var(--patch-bubble-edge),
+    0 22px 44px -14px var(--patch-bubble-shadow);
+  color: var(--patch-bubble-text);
+  font-family: var(--patch-font, inherit);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+  transform-origin: 50% 100%;
+  animation: patch-bubble-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) 0.35s both;
+}
+
+.patch-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  background: var(--patch-bubble-bg);
+  transform: rotate(45deg);
+  box-shadow: 1px 1px 0 0 var(--patch-bubble-edge);
+}
+
+@keyframes patch-bubble-pop {
+  0% { opacity: 0; transform: translateY(6px) scale(0.7); }
+  100% { opacity: 1; transform: none; }
+}
+
+/* ---------- Colours ---------- */
+
+.patch-svg { display: block; overflow: visible; }
+
+.patch-f-body { fill: var(--patch-fill); }
+.patch-s-body { stroke: var(--patch-fill); }
+.patch-f-ink { fill: var(--patch-ink); }
+.patch-s-ink { stroke: var(--patch-ink); }
+.patch-f-cheek { fill: var(--patch-cheek); }
+.patch-f-sun { fill: var(--patch-sun); }
+.patch-s-sun { stroke: var(--patch-sun); }
+.patch-f-rain { fill: var(--patch-rain); }
+.patch-s-rain { stroke: var(--patch-rain); }
+.patch-f-scarf { fill: var(--patch-scarf); }
+.patch-s-scarf { stroke: var(--patch-scarf); }
+.patch-f-cap { fill: var(--patch-cap); }
+.patch-f-cloud { fill: var(--patch-cloud); }
+.patch-f-snow { fill: var(--patch-snow); }
+.patch-s-snow { stroke: var(--patch-snow); }
+.patch-s-pole { stroke: var(--patch-pole); }
+.patch-s-highlight { stroke: var(--patch-highlight); }
+.patch-f-shadow { fill: var(--patch-shadow); }
+
+.patch-z {
+  font-family: var(--patch-font, inherit);
+  font-weight: 700;
+}
+
+/* ---------- Dressing: accessories and mood bits ---------- */
+
+.patch-acc,
+.patch-mood { display: none; }
+
+.patch-has-sun .patch-acc-sun,
+.patch-has-shades .patch-acc-shades,
+.patch-has-cloud .patch-acc-cloud,
+.patch-has-rain .patch-acc-rain,
+.patch-has-umbrella .patch-acc-umbrella,
+.patch-has-snow .patch-acc-snow,
+.patch-has-scarf .patch-acc-scarf,
+.patch-has-moon .patch-acc-moon,
+.patch-has-cap .patch-acc-cap,
+.patch-has-mug .patch-acc-mug,
+.patch-m-worried .patch-mood-brows,
+.patch-m-worried .patch-mood-sweat,
+.patch-m-frazzled .patch-mood-sweat,
+.patch-m-tired .patch-mood-lids,
+.patch-m-happy .patch-mood-blush { display: inline; }
+
+.patch-acc-sun {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: patch-sun-turn 18s linear infinite;
+}
+.patch-acc-cloud { animation: patch-cloud 9s ease-in-out infinite; }
+.patch-star { animation: patch-twinkle 2.4s ease-in-out infinite; }
+.patch-star-b { animation-delay: -0.8s; }
+.patch-star-c { animation-delay: -1.6s; }
+.patch-drop { animation: patch-fall 1.1s linear infinite; }
+.patch-drop.patch-d2 { animation-delay: -0.4s; }
+.patch-drop.patch-d3 { animation-delay: -0.7s; }
+.patch-drop.patch-d4 { animation-delay: -0.2s; }
+.patch-drop.patch-d5 { animation-delay: -0.9s; }
+.patch-drop.patch-d6 { animation-delay: -0.55s; }
+.patch-flake { animation: patch-drift 3.2s linear infinite; }
+.patch-flake.patch-d2 { animation-delay: -1s; }
+.patch-flake.patch-d3 { animation-delay: -2s; }
+.patch-flake.patch-d4 { animation-delay: -0.5s; }
+.patch-flake.patch-d5 { animation-delay: -2.6s; }
+.patch-flake.patch-d6 { animation-delay: -1.5s; }
+.patch-steam { opacity: 0.6; animation: patch-steam 2.4s ease-out infinite; }
+.patch-steam-b { animation-delay: -1.2s; }
+.patch-mood-sweat { animation: patch-sweat 1.8s ease-in infinite; }
+
+@keyframes patch-sun-turn { to { transform: rotate(360deg); } }
+@keyframes patch-fall {
+  0% { transform: translate(0, -24px); opacity: 0; }
+  15% { opacity: 0.8; }
+  100% { transform: translate(-6px, 70px); opacity: 0; }
+}
+@keyframes patch-drift {
+  0% { transform: translate(0, -20px); opacity: 0; }
+  15% { opacity: 1; }
+  50% { transform: translate(6px, 30px); }
+  100% { transform: translate(-4px, 80px); opacity: 0; }
+}
+@keyframes patch-cloud {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(14px); }
+}
+@keyframes patch-twinkle {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+@keyframes patch-sweat {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(14px); opacity: 0; }
+}
+@keyframes patch-steam {
+  0% { transform: translateY(4px); opacity: 0; }
+  35% { opacity: 0.6; }
+  100% { transform: translateY(-8px); opacity: 0; }
+}
+
+/* ---------- Body, idle loops ---------- */
+
+.patch-idle {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: patch-breathe 3.6s ease-in-out infinite;
+}
+.patch-move { transform-box: fill-box; transform-origin: 50% 100%; }
+.patch-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: patch-blink 5s infinite;
+}
+.patch-arm { transform-box: fill-box; transform-origin: 0% 100%; }
+.patch-eyes,
+.patch-heart,
+.patch-spark,
+.patch-z,
+.patch-shadow { transform-box: fill-box; transform-origin: center; }
+.patch-heart,
+.patch-spark,
+.patch-z,
+.patch-o,
+.patch-happy { opacity: 0; }
+
+@keyframes patch-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.04, 0.96); }
+}
+@keyframes patch-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+
+/* ---------- Moves (each plays once per appear) ---------- */
+
+.patch-r-wave .patch-arm { animation: patch-wave 3.2s ease-in-out 1 both; }
+.patch-r-wave .patch-move { animation: patch-lean 3.2s ease-in-out 1 both; }
+
+.patch-r-hop .patch-move { animation: patch-hop 3.2s ease-in-out 1 both; }
+.patch-r-hop .patch-shadow { animation: patch-hop-shadow 3.2s ease-in-out 1 both; }
+
+.patch-r-twirl .patch-move {
+  transform-origin: 50% 50%;
+  animation: patch-twirl 3.2s cubic-bezier(0.5, 0, 0.3, 1) 1 both;
+}
+.patch-r-twirl .patch-spark { animation: patch-spark 3.2s ease-out 1 both; }
+.patch-r-twirl .patch-spark-b { animation-delay: 0.12s; }
+.patch-r-twirl .patch-spark-c { animation-delay: 0.24s; }
+
+.patch-r-peek .patch-move { animation: patch-peek 3.2s cubic-bezier(0.3, 1.4, 0.5, 1) 1 both; }
+.patch-r-peek .patch-eyes { animation: patch-lookleft 3.2s ease-in-out 1 both; }
+
+.patch-r-doze .patch-eye { animation: patch-shut 3.2s 1 both; }
+.patch-r-doze .patch-z { animation: patch-z 3.2s ease-out 1 both; }
+.patch-r-doze .patch-z-b { animation-delay: 0.45s; }
+.patch-r-doze .patch-z-c { animation-delay: 0.9s; }
+.patch-r-doze .patch-move { animation: patch-jolt 3.2s ease-out 1 both; }
+.patch-r-doze .patch-o { animation: patch-o-late 3.2s 1 both; }
+.patch-r-doze .patch-smile { animation: patch-smile-late 3.2s 1 both; }
+
+.patch-r-jelly .patch-move { animation: patch-jelly 3.2s ease-out 1 both; }
+
+.patch-r-love .patch-move { animation: patch-squish 3.2s ease-in-out 1 both; }
+.patch-r-love .patch-heart { animation: patch-heart 3.2s ease-out 1 both; }
+.patch-r-love .patch-eye { animation: patch-eye-off 3.2s 1 both; }
+.patch-r-love .patch-happy { animation: patch-happy-on 3.2s 1 both; }
+.patch-r-love .patch-cheek { animation: patch-blush 3.2s 1 both; }
+
+.patch-r-stretch .patch-move { animation: patch-stretch 3.2s ease-in-out 1 both; }
+.patch-r-stretch .patch-o { animation: patch-o-early 3.2s 1 both; }
+.patch-r-stretch .patch-smile { animation: patch-smile-early 3.2s 1 both; }
+
+@keyframes patch-wave {
+  0% { transform: rotate(0); }
+  10%, 30%, 50% { transform: rotate(-34deg); }
+  20%, 40% { transform: rotate(8deg); }
+  60%, 100% { transform: rotate(0); }
+}
+@keyframes patch-lean {
+  0%, 100% { transform: rotate(0); }
+  10%, 50% { transform: rotate(-4deg); }
+  60% { transform: rotate(0); }
+}
+@keyframes patch-hop {
+  0%, 84%, 100% { transform: translateY(0) scale(1, 1); }
+  8% { transform: scale(1.12, 0.86); }
+  20% { transform: translateY(-36px) scale(0.92, 1.1); }
+  32% { transform: translateY(0) scale(1.14, 0.86); }
+  42% { transform: scale(1.04, 0.96); }
+  50% { transform: scale(1.1, 0.88); }
+  60% { transform: translateY(-22px) scale(0.95, 1.06); }
+  72% { transform: translateY(0) scale(1.08, 0.92); }
+}
+@keyframes patch-hop-shadow {
+  0%, 8%, 32%, 50%, 72%, 100% { transform: scale(1); opacity: 1; }
+  20% { transform: scale(0.6); opacity: 0.5; }
+  60% { transform: scale(0.75); opacity: 0.7; }
+}
+@keyframes patch-twirl {
+  0% { transform: rotate(0) scale(1, 1); }
+  12% { transform: rotate(-12deg) scale(0.9, 1.1); }
+  55% { transform: rotate(360deg) scale(1, 1); }
+  65% { transform: rotate(360deg) scale(1.1, 0.9); }
+  75%, 100% { transform: rotate(360deg) scale(1, 1); }
+}
+@keyframes patch-spark {
+  0%, 45% { opacity: 0; transform: scale(0.3); }
+  55% { opacity: 1; transform: scale(1.1); }
+  80%, 100% { opacity: 0; transform: scale(1.5) rotate(45deg); }
+}
+@keyframes patch-peek {
+  0% { transform: translateY(80px); opacity: 0; }
+  8% { opacity: 1; }
+  28%, 100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes patch-lookleft {
+  0%, 30% { transform: translateX(0); }
+  40%, 78% { transform: translateX(-8px); }
+  88%, 100% { transform: translateX(0); }
+}
+@keyframes patch-shut {
+  0%, 60% { transform: scaleY(0.12); }
+  64%, 100% { transform: scaleY(1); }
+}
+@keyframes patch-z {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  12% { opacity: 1; }
+  50% { opacity: 0; transform: translate(16px, -34px) scale(1.2); }
+  100% { opacity: 0; }
+}
+@keyframes patch-jolt {
+  0%, 60% { transform: translateY(0) scale(1, 1); }
+  66% { transform: translateY(-16px) scale(0.94, 1.1); }
+  74% { transform: translateY(0) scale(1.08, 0.92); }
+  82%, 100% { transform: scale(1, 1); }
+}
+@keyframes patch-o-late {
+  0%, 62% { opacity: 0; }
+  64%, 86% { opacity: 1; }
+  88%, 100% { opacity: 0; }
+}
+@keyframes patch-smile-late {
+  0%, 62% { opacity: 1; }
+  64%, 86% { opacity: 0; }
+  88%, 100% { opacity: 1; }
+}
+@keyframes patch-o-early {
+  0%, 14% { opacity: 0; }
+  18%, 44% { opacity: 1; }
+  48%, 100% { opacity: 0; }
+}
+@keyframes patch-smile-early {
+  0%, 14% { opacity: 1; }
+  18%, 44% { opacity: 0; }
+  48%, 100% { opacity: 1; }
+}
+@keyframes patch-jelly {
+  0%, 72%, 100% { transform: scale(1, 1) skewX(0); }
+  8% { transform: scale(1.14, 0.86); }
+  18% { transform: scale(0.9, 1.1) skewX(7deg); }
+  28% { transform: scale(1.08, 0.92) skewX(-6deg); }
+  38% { transform: scale(0.96, 1.04) skewX(4deg); }
+  48% { transform: skewX(-3deg); }
+  58% { transform: skewX(1.5deg); }
+}
+@keyframes patch-squish {
+  0%, 40%, 100% { transform: scale(1, 1); }
+  12% { transform: scale(1.1, 0.9); }
+  22% { transform: scale(0.95, 1.06); }
+  32% { transform: scale(1.03, 0.97); }
+}
+@keyframes patch-heart {
+  0%, 8% { opacity: 0; transform: translateY(0) scale(0.4); }
+  20% { opacity: 1; transform: translateY(-4px) scale(1.2); }
+  30% { transform: translateY(-8px) scale(1); }
+  78% { opacity: 1; transform: translateY(-28px) scale(1); }
+  92%, 100% { opacity: 0; transform: translateY(-36px) scale(0.9); }
+}
+@keyframes patch-eye-off {
+  0%, 10% { opacity: 1; }
+  14%, 82% { opacity: 0; }
+  86%, 100% { opacity: 1; }
+}
+@keyframes patch-happy-on {
+  0%, 10% { opacity: 0; }
+  14%, 82% { opacity: 1; }
+  86%, 100% { opacity: 0; }
+}
+@keyframes patch-blush {
+  0%, 10%, 90%, 100% { opacity: 0.35; }
+  20%, 80% { opacity: 0.9; }
+}
+@keyframes patch-stretch {
+  0%, 80%, 100% { transform: scale(1, 1); }
+  18%, 40% { transform: scale(0.86, 1.28); }
+  54% { transform: scale(1.16, 0.84); }
+  64% { transform: scale(0.97, 1.03); }
+  72% { transform: scale(1.02, 0.98); }
+}
+
+/*
+ * Reduced motion: no moves, no drift, no falling. Patch and the bubble still
+ * appear, standing still in their resting pose (one-shot extras such as
+ * hearts, sparks and z's stay hidden at their opacity: 0 rest state).
+ */
+@media (prefers-reduced-motion: reduce) {
+  .patch,
+  .patch * {
+    animation: none !important;
+  }
+}
