@@ -8,7 +8,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.3.1"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.4.0"
 }
 ```
 
@@ -124,6 +124,43 @@ Every colour is a custom property with a dark default, set on `.patch`. Override
 ```
 
 All classes are prefixed `patch-` and all keyframes `patch-`. With `prefers-reduced-motion: reduce`, Patch and the bubble still appear, but nothing moves.
+
+## Jetpack Compose
+
+The same Patch for Android lives in `android/`, as a Compose library: the same art, moods, moves, dressing, poking and spring drag. JitPack builds it from a tag:
+
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        maven("https://jitpack.io") { content { includeGroup("com.github.JBlaak") } }
+    }
+}
+
+// build.gradle.kts
+implementation("com.github.JBlaak:patch:v0.4.0")
+```
+
+```kotlin
+val patch = rememberPatchState(
+    PatchScene(move = PatchMove.Wave, mood = PatchMood.Happy, line = "Hi!", time = PatchTime.Day, sky = PatchSky.Clear),
+)
+
+Patch(
+    state = patch,
+    onPoke = { patch.appear(patch.scene.copy(move = PatchMove.Jelly)) },
+    onGrab = null,
+    onDrop = null,
+)
+```
+
+`PatchColors` sets the colours (light and dark defaults follow the system theme). With animations turned off in the system settings, Patch still appears but nothing moves. The poke label is "Poke Patch", in Dutch "Por Patch".
+
+```sh
+cd android
+./gradlew :patch:testDebugUnitTest :patch:verifyPaparazziDebug   # tests and snapshots
+./gradlew :patch:cleanRecordPaparazziDebug                       # re-record snapshots
+```
 
 ## Preview
 

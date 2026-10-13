@@ -1,0 +1,5 @@
+# JitPack builds the Compose library in android/; the npm package needs no build.
+jdk:
+  - openjdk21
+install:
+  - cd android && ./gradlew :patch:publishReleasePublicationToMavenLocal
