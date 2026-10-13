@@ -138,7 +138,7 @@ dependencyResolutionManagement {
 }
 
 // build.gradle.kts
-implementation("com.github.JBlaak:patch:v0.4.0")
+implementation("com.github.JBlaak:Patch:v0.4.0")
 ```
 
 ```kotlin
