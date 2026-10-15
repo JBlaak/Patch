@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import nl.jblaak.patch.Fling
 import nl.jblaak.patch.PatchColors
 import nl.jblaak.patch.PatchScene
+import nl.jblaak.patch.PatchStyle
 import nl.jblaak.patch.R
 
 /** Patch itself: the art, playing the scene's move once per appearance, and the poke and drag when interactive. */
@@ -48,6 +49,7 @@ internal fun PatchArt(
     onPoke: (() -> Unit)?,
     onGrab: (() -> Unit)?,
     onDrop: ((Fling) -> Unit)?,
+    style: PatchStyle,
     colors: PatchColors,
 ) {
     val appearedAt = remember(appearance) { Snapshot.withoutReadObservation { clock.millis } }
@@ -69,7 +71,7 @@ internal fun PatchArt(
         label = "squish",
     )
     val zs = rememberZs()
-    val pokeLabel = stringResource(R.string.patch_poke)
+    val pokeLabel = stringResource(if (style == PatchStyle.James) R.string.james_poke else R.string.patch_poke)
     val gestures = if (interactive) {
         Modifier
             .semantics {
@@ -124,8 +126,9 @@ internal fun PatchArt(
                 else -> moving
             }
             val frame = Frame(
+                style = style,
                 mood = scene.mood,
-                accessories = accessoriesFor(scene.sky, scene.time),
+                accessories = accessoriesFor(style, scene.sky, scene.time),
                 pose = pose,
                 loopMillis = if (still) null else millis,
                 colors = colors,

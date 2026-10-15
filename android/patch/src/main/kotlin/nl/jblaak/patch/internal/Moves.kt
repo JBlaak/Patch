@@ -23,6 +23,8 @@ internal data class Pose(
     /** The whole body fades in while peeking up. */
     val bodyAlpha: Float,
     val armRotation: Float,
+    /** James's bow tie, about its knot; Patch wears none. */
+    val tieRotation: Float,
     val eyesShiftX: Float,
     /** Overrides the blink while a move holds the eyes; null lets Patch blink. */
     val eyeScaleY: Float?,
@@ -44,6 +46,7 @@ internal data class Pose(
             spinsAboutMiddle = false,
             bodyAlpha = 1f,
             armRotation = 0f,
+            tieRotation = 0f,
             eyesShiftX = 0f,
             eyeScaleY = null,
             eyeAlpha = 1f,
@@ -86,7 +89,7 @@ internal fun poseAt(move: PatchMove, millis: Long): Pose {
             surprisedAlpha = oLate.at(p),
             smileAlpha = 1f - oLate.at(p),
         )
-        PatchMove.Jelly -> rest.copy(body = jelly.at(p))
+        PatchMove.Jelly -> rest.copy(body = jelly.at(p), tieRotation = tieWiggle.at(p).rotation)
         PatchMove.Love -> rest.copy(
             body = squish.at(p),
             heart = Extra(alpha = heartAlpha.at(p), transform = heart.at(p)),
@@ -229,6 +232,16 @@ private val jelly = transforms(
         0.38f to Xf(sx = 0.96f, sy = 1.04f, skewX = 4f),
         0.48f to Xf(skewX = -3f),
         0.58f to Xf(skewX = 1.5f),
+    ),
+)
+private val tieWiggle = transforms(
+    CssEaseOut,
+    stopsAt(0f, 0.08f, 0.66f, 1f, value = Xf()),
+    listOf(
+        0.18f to Xf(rotation = -22f),
+        0.3f to Xf(rotation = 16f),
+        0.42f to Xf(rotation = -9f),
+        0.54f to Xf(rotation = 4f),
     ),
 )
 private val squish = transforms(

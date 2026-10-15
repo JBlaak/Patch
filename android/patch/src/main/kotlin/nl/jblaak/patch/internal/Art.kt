@@ -16,6 +16,7 @@ import androidx.compose.ui.text.drawText
 import nl.jblaak.patch.PatchColors
 import nl.jblaak.patch.PatchMood
 import nl.jblaak.patch.PatchSky
+import nl.jblaak.patch.PatchStyle
 import nl.jblaak.patch.PatchTime
 import kotlin.math.tan
 
@@ -27,7 +28,7 @@ import kotlin.math.tan
 internal const val ArtWidth = 220f
 internal const val ArtHeight = 200f
 
-private fun path(d: String): Path = PathParser().parsePathString(d).toPath()
+internal fun path(d: String): Path = PathParser().parsePathString(d).toPath()
 
 private val mouthSmile = path("M93 134 Q100 140 107 134")
 private val mouthFlat = path("M94 136 L106 136")
@@ -91,12 +92,24 @@ private val happyRight = path("M109 121 Q114 113 119 121")
 
 private val feet = Offset(100f, 166f)
 private val middle = Offset(100f, 117f)
+private val jamesFeet = Offset(100f, 172f)
+private val jamesMiddle = Offset(100f, 109f)
 
 /** What Patch wears and what surrounds it. */
-internal enum class Accessory { Sun, Shades, Cloud, Rain, Umbrella, Snow, Scarf, Moon, Cap, Mug }
+internal enum class Accessory { Sun, Shades, Cloud, Rain, Umbrella, Snow, Scarf, Moon, Cap, Mug, Boater, Bowler }
 
-/** From the sky and the time of day; with an unknown sky, by time of day only. */
-internal fun accessoriesFor(sky: PatchSky?, time: PatchTime): Set<Accessory> {
+/** From the sky and the time of day; with an unknown sky, by time of day only. James adds a hat where Patch has none. */
+internal fun accessoriesFor(style: PatchStyle, sky: PatchSky?, time: PatchTime): Set<Accessory> {
+    val worn = patchAccessoriesFor(sky, time)
+    if (style == PatchStyle.Patch) return worn
+    return when (sky) {
+        PatchSky.Clear -> if (time == PatchTime.Night) worn else worn + Accessory.Boater
+        PatchSky.Cloudy -> worn + Accessory.Bowler
+        PatchSky.Rain, PatchSky.Snow, null -> worn
+    }
+}
+
+private fun patchAccessoriesFor(sky: PatchSky?, time: PatchTime): Set<Accessory> {
     return when (sky) {
         PatchSky.Clear -> if (time == PatchTime.Night) setOf(Accessory.Moon, Accessory.Cap) else setOf(Accessory.Sun, Accessory.Shades)
         PatchSky.Cloudy -> setOf(Accessory.Cloud)
@@ -112,6 +125,7 @@ internal fun accessoriesFor(sky: PatchSky?, time: PatchTime): Set<Accessory> {
 
 /** Everything the art needs for one frame. */
 internal class Frame(
+    val style: PatchStyle,
     val mood: PatchMood,
     val accessories: Set<Accessory>,
     val pose: Pose,
@@ -134,13 +148,16 @@ internal fun DrawScope.drawPatch(frame: Frame) {
     if (Accessory.Rain in wears) drawRain(colors, millis)
     if (Accessory.Snow in wears) drawSnow(colors, millis)
     drawShadow(frame.pose.shadow, colors)
-    if (Accessory.Mug in wears) drawMug(colors, millis)
+    val james = frame.style == PatchStyle.James
+    if (Accessory.Mug in wears) drawMug(colors, if (james) colors.tie else colors.scarf, millis)
     drawExtras(frame)
     val pose = frame.pose
-    transformed(pose.body, if (pose.spinsAboutMiddle) middle else feet) {
+    val standsOn = if (james) jamesFeet else feet
+    transformed(pose.body, if (!pose.spinsAboutMiddle) standsOn else if (james) jamesMiddle else middle) {
         val breath = if (millis == null) Xf.None else breathe.at(loop(millis, 3600))
-        transformed(breath, feet) {
-            drawBody(frame, pose.bodyAlpha.coerceIn(0f, 1f))
+        transformed(breath, standsOn) {
+            val alpha = pose.bodyAlpha.coerceIn(0f, 1f)
+            if (james) drawJames(frame, alpha) else drawBody(frame, alpha)
         }
     }
 }
@@ -190,7 +207,7 @@ private fun DrawScope.drawShadow(shadow: Extra, colors: PatchColors) {
     }
 }
 
-private fun DrawScope.drawMug(colors: PatchColors, millis: Long?) {
+private fun DrawScope.drawMug(colors: PatchColors, mugColor: Color, millis: Long?) {
     listOf(steam to 0L, steamB to 1200L).forEach { (wisp, offset) ->
         val p = millis?.let { loop(it, 2400, offset) }
         val rise = p?.let { steamRise.at(it) } ?: 0f
@@ -199,8 +216,8 @@ private fun DrawScope.drawMug(colors: PatchColors, millis: Long?) {
             drawPath(wisp, colors.snow, alpha = alpha, style = Stroke(width = 2.5f, cap = StrokeCap.Round))
         }
     }
-    drawPath(mugHandle, colors.scarf, style = Stroke(width = 3.5f, cap = StrokeCap.Round))
-    drawPath(mug, colors.scarf)
+    drawPath(mugHandle, mugColor, style = Stroke(width = 3.5f, cap = StrokeCap.Round))
+    drawPath(mug, mugColor)
     drawOval(colors.ink, topLeft = Offset(22f, 146.5f), size = Size(18f, 4f))
     drawPath(mugGlint, colors.highlight, style = Stroke(width = 2.5f, cap = StrokeCap.Round))
 }
@@ -208,9 +225,13 @@ private fun DrawScope.drawMug(colors: PatchColors, millis: Long?) {
 private fun DrawScope.drawExtras(frame: Frame) {
     val pose = frame.pose
     val colors = frame.colors
+    // James's head is taller: his heart and z's float from higher up.
+    val raise = if (frame.style == PatchStyle.James) -16f else 0f
     if (pose.heart.alpha > 0f) {
-        transformed(pose.heart.transform, Offset(100f, 48f)) {
-            drawPath(heart, colors.cheek, alpha = pose.heart.alpha.coerceIn(0f, 1f))
+        translated(0f, raise) {
+            transformed(pose.heart.transform, Offset(100f, 48f)) {
+                drawPath(heart, colors.cheek, alpha = pose.heart.alpha.coerceIn(0f, 1f))
+            }
         }
     }
     sparks.forEachIndexed { index, (at, spark) ->
@@ -224,7 +245,7 @@ private fun DrawScope.drawExtras(frame: Frame) {
     frame.zs.forEachIndexed { index, z ->
         val extra = pose.zs[index]
         if (extra.alpha > 0f) {
-            val topLeft = Offset(146f, 78f - z.firstBaseline)
+            val topLeft = Offset(146f, 78f + raise - z.firstBaseline)
             val center = topLeft + Offset(z.size.width / 2f, z.size.height / 2f)
             transformed(extra.transform, center) {
                 drawText(z, color = bodyColor(frame), topLeft = topLeft, alpha = extra.alpha.coerceIn(0f, 1f))
@@ -233,7 +254,7 @@ private fun DrawScope.drawExtras(frame: Frame) {
     }
 }
 
-private fun bodyColor(frame: Frame): Color {
+internal fun bodyColor(frame: Frame): Color {
     return if (frame.mood == PatchMood.Tired) frame.colors.bodyTired else frame.colors.body
 }
 
@@ -316,12 +337,12 @@ private fun DrawScope.drawShades(colors: PatchColors, alpha: Float) {
     drawPath(shadesGlint, colors.highlight, alpha = alpha, style = Stroke(width = 2f, cap = StrokeCap.Round))
 }
 
-private inline fun DrawScope.translated(x: Float, y: Float, block: DrawScope.() -> Unit) {
+internal inline fun DrawScope.translated(x: Float, y: Float, block: DrawScope.() -> Unit) {
     withTransform({ translate(x, y) }, block)
 }
 
 /** A CSS transform about [origin]: translate, rotate, scale, then skew. */
-private inline fun DrawScope.transformed(xf: Xf, origin: Offset, block: DrawScope.() -> Unit) {
+internal inline fun DrawScope.transformed(xf: Xf, origin: Offset, block: DrawScope.() -> Unit) {
     if (xf == Xf.None) {
         block()
         return
@@ -352,7 +373,7 @@ private val drift = transforms(
 private val driftAlpha = floats(CssLinear, listOf(0f to 0f, 0.15f to 1f, 1f to 0f))
 private val steamRise = floats(CssEaseOut, listOf(0f to 4f, 1f to -8f))
 private val steamAlpha = floats(CssEaseOut, listOf(0f to 0f, 0.35f to 0.6f, 1f to 0f))
-private val sweatDrip = floats(CssEaseIn, listOf(0f to 0f, 1f to 14f))
-private val sweatFade = floats(CssEaseIn, listOf(0f to 0f, 0.2f to 1f, 1f to 0f))
+internal val sweatDrip = floats(CssEaseIn, listOf(0f to 0f, 1f to 14f))
+internal val sweatFade = floats(CssEaseIn, listOf(0f to 0f, 0.2f to 1f, 1f to 0f))
 private val breathe = transforms(CssEaseInOut, stopsAt(0f, 1f, value = Xf()), listOf(0.5f to Xf(sx = 1.04f, sy = 0.96f)))
-private val blink = floats(CssEase, stopsAt(0f, 0.93f, 1f, value = 1f), listOf(0.96f to 0.1f))
+internal val blink = floats(CssEase, stopsAt(0f, 0.93f, 1f, value = 1f), listOf(0.96f to 0.1f))

@@ -156,6 +156,17 @@ Patch(
 
 `PatchColors` sets the colours (light and dark defaults follow the system theme). With animations turned off in the system settings, Patch still appears but nothing moves. The poke label is "Poke Patch", in Dutch "Por Patch".
 
+### James
+
+`Patch(…, style = PatchStyle.James)` draws James instead: a slightly taller lagoon blob (`#7cc6d9`) with brows and a claret bow tie, for apps where Patch should be a little more dressed up. He takes the same scenes. What differs:
+
+- A happy James smiles with his eyes, a frazzled one wears his bow tie crooked, and a tired one leans a little.
+- `Jelly` also wiggles his bow tie straight.
+- He adds a hat where Patch has none: a straw boater with the sun (and the sunglasses), a bowler under clouds. In snow a mustard scarf replaces the bow tie; the morning mug is in the tie's colour.
+- `PatchColors.JamesLight` and `PatchColors.JamesDark` are his tokens, with `tie`, `straw` and `hat` added. The poke label is "Poke James", in Dutch "Por James".
+
+James is Compose only for now; the TypeScript package draws Patch alone.
+
 ```sh
 cd android
 ./gradlew :patch:testDebugUnitTest :patch:verifyPaparazziDebug   # tests and snapshots
