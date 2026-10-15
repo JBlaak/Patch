@@ -23,6 +23,11 @@ data class PatchColors(
     val bubbleEdge: Color,
     val bubbleShadow: Color,
     val shadow: Color,
+    /** James's bow tie, the band on his boater and his mug. */
+    val tie: Color = Color(0xFFB03A52),
+    val straw: Color = Color(0xFFE3C98C),
+    /** James's bowler. */
+    val hat: Color = Color(0xFF1A1C1F),
 ) {
     companion object {
         /** The package's own dark defaults. */
@@ -56,5 +61,28 @@ data class PatchColors(
             bubbleShadow = Color(0x2E14281E),
             shadow = Color(0x2E14281E),
         )
+
+        /** James on a dark background: lagoon instead of mint, a claret bow tie, a mustard scarf. */
+        val JamesDark = Dark.copy(
+            body = Color(0xFF7CC6D9),
+            bodyTired = Color(0xFF619AA9),
+            scarf = Color(0xFFE8C25E),
+            hat = Color(0xFF30343A),
+        )
+
+        /** James on a light background. */
+        val JamesLight = Light.copy(
+            body = JamesDark.body,
+            bodyTired = JamesDark.bodyTired,
+            scarf = JamesDark.scarf,
+        )
+
+        /** The [style]'s own tokens, light or [dark]. */
+        fun of(style: PatchStyle, dark: Boolean): PatchColors {
+            return when (style) {
+                PatchStyle.Patch -> if (dark) Dark else Light
+                PatchStyle.James -> if (dark) JamesDark else JamesLight
+            }
+        }
     }
 }

@@ -27,6 +27,9 @@ enum class PatchSky { Clear, Cloudy, Rain, Snow }
 
 enum class PatchTime { Morning, Day, Evening, Night }
 
+/** Who appears: Patch, the mint blob, or James, a slightly taller lagoon blob in a bow tie and hats. */
+enum class PatchStyle { Patch, James }
+
 /** One appearance of Patch: the move it plays once, its face, its line, and what it wears. */
 data class PatchScene(
     val move: PatchMove,
@@ -80,8 +83,9 @@ fun Patch(
     onGrab: (() -> Unit)?,
     onDrop: ((Fling) -> Unit)?,
     modifier: Modifier = Modifier,
-    /** Opt-in override; by default the light or dark tokens follow the system theme. */
-    colors: PatchColors = if (isSystemInDarkTheme()) PatchColors.Dark else PatchColors.Light,
+    style: PatchStyle = PatchStyle.Patch,
+    /** Opt-in override; by default the [style]'s light or dark tokens follow the system theme. */
+    colors: PatchColors = PatchColors.of(style, dark = isSystemInDarkTheme()),
 ) {
     PatchContent(
         state = state,
@@ -89,6 +93,7 @@ fun Patch(
         onPoke = onPoke,
         onGrab = onGrab,
         onDrop = onDrop,
+        style = style,
         colors = colors,
         modifier = modifier,
     )
@@ -101,6 +106,7 @@ internal fun PatchContent(
     onPoke: (() -> Unit)?,
     onGrab: (() -> Unit)?,
     onDrop: ((Fling) -> Unit)?,
+    style: PatchStyle,
     colors: PatchColors,
     modifier: Modifier,
 ) {
@@ -124,6 +130,7 @@ internal fun PatchContent(
             onPoke = onPoke,
             onGrab = onGrab,
             onDrop = onDrop,
+            style = style,
             colors = colors,
         )
     }

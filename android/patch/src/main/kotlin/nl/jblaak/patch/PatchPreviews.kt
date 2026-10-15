@@ -9,9 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-/** Patch standing still on the app's light or dark background, as the snapshots show it. */
+/** Patch (or James) standing still on the app's light or dark background, as the snapshots show it. */
 @Composable
-internal fun PatchPreview(scene: PatchScene, dark: Boolean) {
+internal fun PatchPreview(scene: PatchScene, dark: Boolean, style: PatchStyle = PatchStyle.Patch) {
     Box(Modifier.background(if (dark) Color(0xFF141A17) else Color(0xFFF7FAF8)).padding(24.dp)) {
         PatchContent(
             state = rememberPatchState(scene),
@@ -19,7 +19,8 @@ internal fun PatchPreview(scene: PatchScene, dark: Boolean) {
             onPoke = {},
             onGrab = {},
             onDrop = {},
-            colors = if (dark) PatchColors.Dark else PatchColors.Light,
+            style = style,
+            colors = PatchColors.of(style, dark),
             modifier = Modifier,
         )
     }
@@ -45,4 +46,16 @@ internal fun PatchWorriedDarkPreview() {
 @Composable
 internal fun PatchRainPreview() {
     PatchPreview(previewScene(PatchMood.Happy, sky = PatchSky.Rain, time = PatchTime.Day), dark = false)
+}
+
+@Preview
+@Composable
+internal fun JamesCalmPreview() {
+    PatchPreview(previewScene(PatchMood.Calm, sky = null, time = PatchTime.Day), dark = false, style = PatchStyle.James)
+}
+
+@Preview
+@Composable
+internal fun JamesCloudyDarkPreview() {
+    PatchPreview(previewScene(PatchMood.Happy, sky = PatchSky.Cloudy, time = PatchTime.Day), dark = true, style = PatchStyle.James)
 }
