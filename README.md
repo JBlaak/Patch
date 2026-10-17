@@ -1,6 +1,6 @@
 # Patch
 
-Patch is a small mint blob friend for empty-state screens. Each time the screen comes into view, Patch pops up with a speech bubble line and plays one move. What Patch wears follows the weather and time of day, and its face follows a mood.
+Patch is a small mint blob friend for empty-state screens. Each time the screen comes into view, Patch pops up with a speech bubble line and plays one move. What Patch wears follows the weather and time of day, and optionally the season or a Dutch holiday; its face follows a mood.
 
 Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: the package ships its TypeScript source for your bundler (esbuild, Vite, …) to compile.
 
@@ -8,7 +8,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.4.0"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.6.0"
 }
 ```
 
@@ -26,6 +26,8 @@ patch.appear({
   line: 'Hi! 2 sessions running smoothly.',
   time: 'day',
   sky: 'clear', // or null when the weather is unknown
+  season: 'autumn', // optional
+  holiday: null,    // optional, e.g. 'koningsdag'
 });
 
 // later
@@ -39,13 +41,19 @@ type PatchMove = 'wave' | 'hop' | 'twirl' | 'peek' | 'doze' | 'jelly' | 'love' |
 type PatchMood = 'calm' | 'happy' | 'worried' | 'frazzled' | 'tired';
 type PatchSky = 'clear' | 'cloudy' | 'rain' | 'snow';
 type PatchTime = 'morning' | 'day' | 'evening' | 'night';
+type PatchSeason = 'spring' | 'summer' | 'autumn' | 'winter';
+type PatchHoliday =
+  | 'oud-en-nieuw' | 'carnaval' | 'valentijnsdag' | 'pasen' | 'koningsdag'
+  | 'bevrijdingsdag' | 'halloween' | 'sint-maarten' | 'sinterklaas' | 'kerst';
 
 interface PatchScene {
   move: PatchMove;
   mood: PatchMood;
-  line: string;           // speech bubble text, set via textContent
+  line: string;                   // speech bubble text, set via textContent
   time: PatchTime;
-  sky?: PatchSky | null;  // null/undefined: dress by time of day only
+  sky?: PatchSky | null;          // null/undefined: dress by time of day only
+  season?: PatchSeason | null;    // null/undefined: no season, dress by weather as below
+  holiday?: PatchHoliday | null;  // wins over the season while set
 }
 
 interface PatchHandle {
@@ -81,6 +89,38 @@ Nothing shows until the first `appear`. A move plays once per `appear`; breathin
 | unknown | `morning` | steaming mug |
 | unknown | `day`, `evening` | nothing extra |
 
+That is the dressing without a `season` or `holiday`. Patch does not work out the season or the holidays itself: the host passes them in.
+
+### Seasons
+
+With a `season` (and no `holiday`) the season's kit replaces the outfit above. The weather only adds its sky: drops in rain, flakes in snow, the sun in clear weather (the moon at `night`), a cloud when cloudy. There is no umbrella, nightcap or morning mug. At `night` the sunglasses and the butterfly stay home. With the sky unknown, Patch gets the season's own kit and the moon at night.
+
+| Season | Always | `clear` | `cloudy` | `rain` | `snow` |
+| --- | --- | --- | --- | --- | --- |
+| `spring` | tulip, drifting petals | butterfly | | rainbow | |
+| `summer` | | sunglasses, ice cream | sunglasses | puddle | sunglasses |
+| `autumn` | falling leaves, leaves on the ground | | | sou'wester | scarf |
+| `winter` | beanie, scarf | steaming mug | | | |
+
+### Holidays
+
+A `holiday` wins over the season: its kit replaces the season's. Rain and snow still fall. Some holidays bring their own sky and push the sun, cloud and moon out; the others still get the sky as with a season.
+
+| Holiday | Patch gets | Own sky |
+| --- | --- | --- |
+| `oud-en-nieuw` | party hat, fireworks, confetti, oliebol | yes |
+| `carnaval` | jester's hat, confetti | yes |
+| `valentijnsdag` | rising hearts, extra blush | no |
+| `pasen` | bunny ears, painted egg | no |
+| `koningsdag` | crown, bunting, orange body | yes |
+| `bevrijdingsdag` | Dutch flag | no |
+| `halloween` | witch's hat, pumpkin, bats | yes |
+| `sint-maarten` | lantern, beanie, moon | yes |
+| `sinterklaas` | mitre, falling pepernoten, klomp with a carrot | no |
+| `kerst` | Santa hat, string lights, tree | yes |
+
+At the usage limit (`tired`) a seasonal or holiday Patch takes its props off: hats, ears, the flag, the lantern, the ice cream, the props on the ground and the orange body. The sky and the scenery around it (leaves, petals, confetti, hearts, bunting, lights, …) stay. Without a season or holiday, `tired` dresses as in the first table.
+
 | Mood | Face |
 | --- | --- |
 | `calm` | nothing extra |
@@ -113,6 +153,19 @@ Every colour is a custom property with a dark default, set on `.patch`. Override
 | `--patch-bubble-shadow` | `rgba(0,0,0,0.7)` | speech bubble drop shadow |
 | `--patch-shadow` | `rgba(0,0,0,0.35)` | ground shadow |
 | `--patch-font` | `inherit` | bubble text and z's |
+| `--patch-body-koningsdag` | `#f6a95e` | body on `koningsdag` |
+| `--patch-leaf-a` | `#e8955a` | autumn leaves |
+| `--patch-leaf-b` | `#d9694f` | autumn leaves |
+| `--patch-leaf-c` | `#e3b94f` | autumn leaves |
+| `--patch-petal` | `#f4bccb` | petals, butterfly, ice cream |
+| `--patch-tulip` | `#ee7b8b` | tulip |
+| `--patch-stem` | `#6fbf8f` | stems, rainbow, tree, confetti, lights |
+| `--patch-orange` | `#f39a3c` | bunting, pumpkin, lantern, carrot |
+| `--patch-flag-red` | `#d84b4b` | flag, bunting, jester's hat, crown, Santa hat, lights |
+| `--patch-flag-blue` | `#3f6fc4` | flag, bunting, crown |
+| `--patch-brown` | `#b97a45` | oliebol, pepernoten, tree trunk, lantern stick |
+| `--patch-wood` | `#e9c46a` | klomp, ice cream cone |
+| `--patch-mitre` | `#d64545` | mitre |
 
 ```css
 .light .patch {
@@ -181,4 +234,4 @@ npm run preview    # http://127.0.0.1:5199
 npm run typecheck
 ```
 
-The preview has controls for move, mood, sky, time and line, an Appear button, and a light/dark background toggle.
+The preview has controls for move, mood, sky, time, season, holiday and line, an Appear button, and a light/dark background toggle.

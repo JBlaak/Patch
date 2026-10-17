@@ -25,6 +25,21 @@
   --patch-shadow: rgba(0, 0, 0, 0.35);
   --patch-font: inherit;
 
+  /* Seasons and holidays. */
+  --patch-body-koningsdag: #f6a95e;
+  --patch-leaf-a: #e8955a;
+  --patch-leaf-b: #d9694f;
+  --patch-leaf-c: #e3b94f;
+  --patch-petal: #f4bccb;
+  --patch-tulip: #ee7b8b;
+  --patch-stem: #6fbf8f;
+  --patch-orange: #f39a3c;
+  --patch-flag-red: #d84b4b;
+  --patch-flag-blue: #3f6fc4;
+  --patch-brown: #b97a45;
+  --patch-wood: #e9c46a;
+  --patch-mitre: #d64545;
+
   /* Internal: the body colour in use, dimmed when Patch is tired. */
   --patch-fill: var(--patch-body);
 
@@ -39,6 +54,12 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
+}
+
+/* Koningsdag dresses Patch in orange. Tired comes after it and wins, though a
+   tired Patch has its outfit taken off anyway. */
+.patch-scene.patch-has-orange {
+  --patch-fill: var(--patch-body-koningsdag);
 }
 
 .patch-scene.patch-m-tired {
@@ -148,6 +169,22 @@
 .patch-s-pole { stroke: var(--patch-pole); }
 .patch-s-highlight { stroke: var(--patch-highlight); }
 .patch-f-shadow { fill: var(--patch-shadow); }
+.patch-s-cap { stroke: var(--patch-cap); }
+.patch-f-pole { fill: var(--patch-pole); }
+.patch-f-leaf-a { fill: var(--patch-leaf-a); }
+.patch-f-leaf-b { fill: var(--patch-leaf-b); }
+.patch-f-leaf-c { fill: var(--patch-leaf-c); }
+.patch-f-petal { fill: var(--patch-petal); }
+.patch-f-tulip { fill: var(--patch-tulip); }
+.patch-f-stem { fill: var(--patch-stem); }
+.patch-s-stem { stroke: var(--patch-stem); }
+.patch-f-orange { fill: var(--patch-orange); }
+.patch-f-flag-red { fill: var(--patch-flag-red); }
+.patch-f-flag-blue { fill: var(--patch-flag-blue); }
+.patch-f-brown { fill: var(--patch-brown); }
+.patch-s-brown { stroke: var(--patch-brown); }
+.patch-f-wood { fill: var(--patch-wood); }
+.patch-f-mitre { fill: var(--patch-mitre); }
 
 .patch-z {
   font-family: var(--patch-font, inherit);
@@ -169,6 +206,37 @@
 .patch-has-moon .patch-acc-moon,
 .patch-has-cap .patch-acc-cap,
 .patch-has-mug .patch-acc-mug,
+.patch-has-rainbow .patch-acc-rainbow,
+.patch-has-bunting .patch-acc-bunting,
+.patch-has-lights .patch-acc-lights,
+.patch-has-fireworks .patch-acc-fireworks,
+.patch-has-bats .patch-acc-bats,
+.patch-has-butterfly .patch-acc-butterfly,
+.patch-has-leaves .patch-acc-leaves,
+.patch-has-petals .patch-acc-petals,
+.patch-has-confetti .patch-acc-confetti,
+.patch-has-pepernoten .patch-acc-pepernoten,
+.patch-has-hearts .patch-acc-hearts,
+.patch-has-puddle .patch-acc-puddle,
+.patch-has-oliebol .patch-acc-oliebol,
+.patch-has-egg .patch-acc-egg,
+.patch-has-pumpkin .patch-acc-pumpkin,
+.patch-has-klomp .patch-acc-klomp,
+.patch-has-tree .patch-acc-tree,
+.patch-has-ears .patch-acc-ears,
+.patch-has-flag .patch-acc-flag,
+.patch-has-ice-cream .patch-acc-ice-cream,
+.patch-has-lantern .patch-acc-lantern,
+.patch-has-flower .patch-acc-flower,
+.patch-has-souwester .patch-acc-souwester,
+.patch-has-beanie .patch-acc-beanie,
+.patch-has-party-hat .patch-acc-party-hat,
+.patch-has-jester .patch-acc-jester,
+.patch-has-crown .patch-acc-crown,
+.patch-has-witch-hat .patch-acc-witch-hat,
+.patch-has-mitre .patch-acc-mitre,
+.patch-has-santa-hat .patch-acc-santa-hat,
+.patch-has-blush .patch-mood-blush,
 .patch-m-worried .patch-mood-brows,
 .patch-m-worried .patch-mood-sweat,
 .patch-m-frazzled .patch-mood-sweat,
@@ -200,6 +268,47 @@
 .patch-steam-b { animation-delay: -1.2s; }
 .patch-mood-sweat { animation: patch-sweat 1.8s ease-in infinite; }
 
+
+/* Seasonal and holiday scenery. The `patch-d*` delays here stagger the
+   pieces of one accessory; drops and flakes keep their own above. */
+.patch-leaf,
+.patch-petal,
+.patch-confetti,
+.patch-burst,
+.patch-flutter,
+.patch-rise,
+.patch-ripple,
+.patch-glow { transform-box: fill-box; transform-origin: center; }
+.patch-leaf { animation: patch-leaf 5s linear infinite; }
+.patch-petal { animation: patch-leaf 6.5s linear infinite; }
+.patch-confetti { animation: patch-leaf 3.4s linear infinite; }
+.patch-twinkle { animation: patch-twinkle 2.4s ease-in-out infinite; }
+.patch-burst { animation: patch-burst 2.2s ease-out infinite; }
+.patch-flutter { animation: patch-flutter 0.35s ease-in-out infinite alternate; }
+.patch-hover { animation: patch-hover 3s ease-in-out infinite; }
+.patch-rise { animation: patch-rise 3.6s ease-out infinite; }
+.patch-ripple { animation: patch-ripple 1.6s ease-out infinite; }
+/* Resting opacity too, so with reduced motion the lantern's glow stays a
+   faint halo rather than a solid disc. */
+.patch-glow { opacity: 0.2; animation: patch-glow 2.6s ease-in-out infinite; }
+.patch-flag-wave {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  animation: patch-flag-wave 1.8s ease-in-out infinite;
+}
+.patch-sway {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: patch-sway 3s ease-in-out infinite;
+}
+:is(.patch-leaf, .patch-petal, .patch-confetti, .patch-twinkle, .patch-burst, .patch-hover, .patch-rise, .patch-ripple).patch-d2 { animation-delay: -0.4s; }
+:is(.patch-leaf, .patch-petal, .patch-confetti, .patch-twinkle, .patch-burst, .patch-hover, .patch-rise, .patch-ripple).patch-d3 { animation-delay: -0.75s; }
+:is(.patch-leaf, .patch-petal, .patch-confetti, .patch-twinkle, .patch-burst, .patch-hover, .patch-rise, .patch-ripple).patch-d4 { animation-delay: -1.3s; }
+:is(.patch-leaf, .patch-petal, .patch-confetti, .patch-twinkle, .patch-burst, .patch-hover, .patch-rise, .patch-ripple).patch-d5 { animation-delay: -2.1s; }
+:is(.patch-leaf, .patch-petal, .patch-confetti, .patch-twinkle, .patch-burst, .patch-hover, .patch-rise, .patch-ripple).patch-d6 { animation-delay: -2.9s; }
+:is(.patch-leaf, .patch-petal, .patch-confetti, .patch-twinkle, .patch-burst, .patch-hover, .patch-rise, .patch-ripple).patch-d7 { animation-delay: -3.6s; }
+:is(.patch-leaf, .patch-petal, .patch-confetti, .patch-twinkle, .patch-burst, .patch-hover, .patch-rise, .patch-ripple).patch-d8 { animation-delay: -4.4s; }
+
 @keyframes patch-sun-turn { to { transform: rotate(360deg); } }
 @keyframes patch-fall {
   0% { transform: translate(0, -24px); opacity: 0; }
@@ -229,6 +338,49 @@
   0% { transform: translateY(4px); opacity: 0; }
   35% { opacity: 0.6; }
   100% { transform: translateY(-8px); opacity: 0; }
+}
+@keyframes patch-leaf {
+  0% { transform: translate(0, -20px) rotate(0); opacity: 0; }
+  12% { opacity: 1; }
+  35% { transform: translate(12px, 14px) rotate(120deg); }
+  65% { transform: translate(-8px, 48px) rotate(230deg); }
+  88% { opacity: 1; }
+  100% { transform: translate(6px, 86px) rotate(340deg); opacity: 0; }
+}
+@keyframes patch-burst {
+  0% { transform: scale(0.2); opacity: 0; }
+  20% { opacity: 1; }
+  60% { transform: scale(1.15); opacity: 0.9; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+@keyframes patch-flutter {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0.35); }
+}
+@keyframes patch-hover {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-6px, -6px); }
+}
+@keyframes patch-rise {
+  0% { transform: translateY(10px) scale(0.6); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-34px) scale(1); opacity: 0; }
+}
+@keyframes patch-ripple {
+  0% { transform: scale(0.3); opacity: 0.9; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+@keyframes patch-glow {
+  0%, 100% { opacity: 0.14; transform: scale(0.92); }
+  50% { opacity: 0.3; transform: scale(1.08); }
+}
+@keyframes patch-flag-wave {
+  0%, 100% { transform: skewY(0); }
+  50% { transform: skewY(-6deg); }
+}
+@keyframes patch-sway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
 }
 
 /* ---------- Body, idle loops ---------- */
