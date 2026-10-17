@@ -1,7 +1,7 @@
 # Patch
 
 <p align="center">
-  <img src="docs/patch.png" alt="Patch, a mint blob in sunglasses, waving under the sun and saying &quot;Hebbes.&quot;" width="360">
+  <img src="docs/patch.png" alt="Patch, a mint blob in sunglasses, waving under the sun and saying &quot;Hallo.&quot;" width="360">
 </p>
 
 Patch is my friend in my personal projects: a small mint blob that keeps me company wherever an app has a moment to spare. An empty state, a status screen, a quiet corner of a dashboard: Patch shows up, says something, and makes the app feel a little less like a tool.
