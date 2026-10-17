@@ -1,6 +1,12 @@
 # Patch
 
-Patch is a small mint blob friend for empty-state screens. Each time the screen comes into view, Patch pops up with a speech bubble line and plays one move. What Patch wears follows the weather and time of day, and optionally the season or a Dutch holiday; its face follows a mood.
+<p align="center">
+  <img src="docs/patch.png" alt="Patch, a mint blob in sunglasses, waving under the sun and saying &quot;Hebbes.&quot;" width="360">
+</p>
+
+Patch is my friend in my personal projects: a small mint blob that keeps me company wherever an app has a moment to spare. An empty state, a status screen, a quiet corner of a dashboard: Patch shows up, says something, and makes the app feel a little less like a tool.
+
+Each time Patch comes into view, it pops up with a speech bubble line and plays one move. What Patch wears follows the weather and time of day, and optionally the season or a Dutch holiday; its face follows a mood.
 
 Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: the package ships its TypeScript source for your bundler (esbuild, Vite, …) to compile.
 
@@ -180,7 +186,7 @@ All classes are prefixed `patch-` and all keyframes `patch-`. With `prefers-redu
 
 ## Jetpack Compose
 
-The same Patch for Android lives in `android/`, as a Compose library: the same art, moods, moves, dressing, poking and spring drag. JitPack builds it from a tag:
+The same Patch for Android lives in `android/`, as a Compose library: the same art, moods, moves, weather dressing, poking and spring drag. Seasons and holidays are TypeScript only for now. JitPack builds it from a tag:
 
 ```kotlin
 // settings.gradle.kts
@@ -191,7 +197,7 @@ dependencyResolutionManagement {
 }
 
 // build.gradle.kts
-implementation("com.github.JBlaak:Patch:v0.4.0")
+implementation("com.github.JBlaak:Patch:v0.6.0")
 ```
 
 ```kotlin
