@@ -14,7 +14,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.6.0"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.7.0"
 }
 ```
 
@@ -197,7 +197,7 @@ dependencyResolutionManagement {
 }
 
 // build.gradle.kts
-implementation("com.github.JBlaak:Patch:v0.6.0")
+implementation("com.github.JBlaak:Patch:v0.7.0")
 ```
 
 ```kotlin
@@ -214,6 +214,10 @@ Patch(
 ```
 
 `PatchColors` sets the colours (light and dark defaults follow the system theme). With animations turned off in the system settings, Patch still appears but nothing moves. The poke label is "Poke Patch", in Dutch "Por Patch".
+
+### Avatar
+
+`PatchAvatar(mood, Modifier.size(44.dp))` draws Patch small and square for beside a line of text, as in a chat: just the blob and its mood's face, without the bubble, the weather or the shadow. It breathes and blinks (and stands still with animations off), and isn't a button. `style` and `colors` work as on `Patch`; its content description is "Patch" (or "James").
 
 ### James
 
