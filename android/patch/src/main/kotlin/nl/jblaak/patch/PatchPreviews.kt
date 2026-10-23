@@ -3,6 +3,7 @@ package nl.jblaak.patch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,4 +59,24 @@ internal fun JamesCalmPreview() {
 @Composable
 internal fun JamesCloudyDarkPreview() {
     PatchPreview(previewScene(PatchMood.Happy, sky = PatchSky.Cloudy, time = PatchTime.Day), dark = true, style = PatchStyle.James)
+}
+
+/** Patch (or James) as a 56dp avatar standing still, as the snapshots show it. */
+@Composable
+internal fun PatchAvatarPreview(mood: PatchMood, dark: Boolean, style: PatchStyle = PatchStyle.Patch) {
+    Box(Modifier.background(if (dark) Color(0xFF141A17) else Color(0xFFF7FAF8)).padding(12.dp)) {
+        PatchAvatarContent(mood = mood, still = true, style = style, colors = PatchColors.of(style, dark), modifier = Modifier.size(56.dp))
+    }
+}
+
+@Preview
+@Composable
+internal fun PatchAvatarCalmPreview() {
+    PatchAvatarPreview(PatchMood.Calm, dark = false)
+}
+
+@Preview
+@Composable
+internal fun JamesAvatarHappyDarkPreview() {
+    PatchAvatarPreview(PatchMood.Happy, dark = true, style = PatchStyle.James)
 }

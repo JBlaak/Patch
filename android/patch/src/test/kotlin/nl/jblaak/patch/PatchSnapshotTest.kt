@@ -109,3 +109,27 @@ class JamesOutfitSnapshotTest(private val sky: PatchSky?, private val time: Patc
         }
     }
 }
+
+@RunWith(Parameterized::class)
+class PatchAvatarSnapshotTest(private val style: PatchStyle, private val mood: PatchMood, private val dark: Boolean) {
+
+    @get:Rule
+    val paparazzi = Paparazzi(deviceConfig = DeviceConfig.PIXEL_5, renderingMode = SessionParams.RenderingMode.SHRINK)
+
+    @Test
+    fun avatar() {
+        paparazzi.snapshot(name = "avatar-${style.name.lowercase()}-${mood.name.lowercase()}-${if (dark) "dark" else "light"}") {
+            PatchAvatarPreview(mood, dark = dark, style = style)
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters(name = "{0}, {1}, dark={2}")
+        fun cases(): List<Array<Any>> {
+            return PatchStyle.entries.flatMap { style ->
+                PatchMood.entries.map { mood -> arrayOf<Any>(style, mood, false) } + listOf(arrayOf<Any>(style, PatchMood.Calm, true))
+            }
+        }
+    }
+}

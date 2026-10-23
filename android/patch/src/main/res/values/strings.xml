@@ -2,4 +2,6 @@
 <resources>
     <string name="patch_poke">Poke Patch</string>
     <string name="james_poke">Poke James</string>
+    <string name="patch_name" translatable="false">Patch</string>
+    <string name="james_name" translatable="false">James</string>
 </resources>
