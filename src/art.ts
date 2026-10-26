@@ -215,6 +215,14 @@ export function patchArt(mouth: Mouth): string {
 <g transform="rotate(-14 84 72)"><ellipse class="patch-f-body" cx="84" cy="44" rx="10" ry="28"/><ellipse class="patch-f-cheek" cx="84" cy="46" rx="5" ry="20" opacity="0.7"/></g>
 <g transform="rotate(14 116 72)"><ellipse class="patch-f-body" cx="116" cy="44" rx="10" ry="28"/><ellipse class="patch-f-cheek" cx="116" cy="46" rx="5" ry="20" opacity="0.7"/></g>
 </g>
+<g class="patch-acc patch-acc-carton">
+<g transform="translate(161 97) rotate(150) scale(1.15) translate(0 12)">
+<path class="patch-f-carton patch-s-pole" d="M-8 0 V-12 L-5.5 -15 L-8 -18 V-26 L0 -32 L8 -26 V-17 L5.5 -14 L8 -11 V0 Z" stroke-width="1.2" stroke-linejoin="round"/>
+<rect class="patch-f-carton patch-s-pole" x="-2" y="-36" width="4" height="5" rx="1" stroke-width="1.2"/>
+<path class="patch-f-orange" d="M-8 -9 H8 V-4 H-8 Z"/>
+<path class="patch-s-scarf" d="M4 -29 V-40 L9 -45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
 <path class="patch-arm patch-s-body" d="M138 130 Q156 116 160 98" stroke-width="10" stroke-linecap="round"/>
 <g class="patch-acc patch-acc-umbrella">
 <path class="patch-s-pole" d="M160 100 V 46" stroke-width="3" stroke-linecap="round"/>

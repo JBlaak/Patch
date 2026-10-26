@@ -67,6 +67,7 @@ type Accessory =
   | 'moon'
   | 'cap'
   | 'mug'
+  | 'carton'
   // Seasons and holidays.
   | 'rainbow'
   | 'bunting'
@@ -200,6 +201,17 @@ function accessoriesFor(scene: PatchScene): Accessory[] {
   return [...new Set(on)];
 }
 
+/**
+ * Everything Patch has on. At the usage limit (`tired`) it holds up an empty
+ * juice carton: it is out of juice, whatever the weather or the day. The
+ * carton takes the hand, so the umbrella goes.
+ */
+function dressingFor(scene: PatchScene): Accessory[] {
+  const on = accessoriesFor(scene);
+  if (scene.mood !== 'tired') return on;
+  return [...on.filter((a) => a !== 'umbrella'), 'carton'];
+}
+
 function mouthFor(mood: PatchMood): Mouth {
   if (mood === 'tired') return MOUTH_FLAT;
   if (mood === 'worried') return MOUTH_FROWN;
@@ -226,7 +238,7 @@ export function mountPatch(container: HTMLElement, options: PatchOptions = {}): 
         'patch-scene',
         `patch-r-${scene.move}`,
         `patch-m-${scene.mood}`,
-        ...accessoriesFor(scene).map((a) => `patch-has-${a}`),
+        ...dressingFor(scene).map((a) => `patch-has-${a}`),
       ].join(' ');
 
       const bubble = document.createElement('div');
