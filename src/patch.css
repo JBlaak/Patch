@@ -39,6 +39,7 @@
   --patch-brown: #b97a45;
   --patch-wood: #e9c46a;
   --patch-mitre: #d64545;
+  --patch-carton: #f4f3ef;
 
   /* Internal: the body colour in use, dimmed when Patch is tired. */
   --patch-fill: var(--patch-body);
@@ -185,6 +186,7 @@
 .patch-s-brown { stroke: var(--patch-brown); }
 .patch-f-wood { fill: var(--patch-wood); }
 .patch-f-mitre { fill: var(--patch-mitre); }
+.patch-f-carton { fill: var(--patch-carton); }
 
 .patch-z {
   font-family: var(--patch-font, inherit);
@@ -206,6 +208,7 @@
 .patch-has-moon .patch-acc-moon,
 .patch-has-cap .patch-acc-cap,
 .patch-has-mug .patch-acc-mug,
+.patch-has-carton .patch-acc-carton,
 .patch-has-rainbow .patch-acc-rainbow,
 .patch-has-bunting .patch-acc-bunting,
 .patch-has-lights .patch-acc-lights,

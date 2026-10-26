@@ -14,7 +14,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.7.0"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.8.0"
 }
 ```
 
@@ -125,7 +125,7 @@ A `holiday` wins over the season: its kit replaces the season's. Rain and snow s
 | `sinterklaas` | mitre, falling pepernoten, klomp with a carrot | no |
 | `kerst` | Santa hat, string lights, tree | yes |
 
-At the usage limit (`tired`) a seasonal or holiday Patch takes its props off: hats, ears, the flag, the lantern, the ice cream, the props on the ground and the orange body. The sky and the scenery around it (leaves, petals, confetti, hearts, bunting, lights, …) stay. Without a season or holiday, `tired` dresses as in the first table.
+At the usage limit (`tired`) Patch holds up an empty juice carton, upside down: it is out of juice. A seasonal or holiday Patch also takes its props off: hats, ears, the flag, the lantern, the ice cream, the props on the ground and the orange body. The sky and the scenery around it (leaves, petals, confetti, hearts, bunting, lights, …) stay. Without a season or holiday, `tired` dresses as in the first table, except that the carton takes the umbrella's place in the rain.
 
 | Mood | Face |
 | --- | --- |
@@ -133,7 +133,7 @@ At the usage limit (`tired`) a seasonal or holiday Patch takes its props off: ha
 | `happy` | stronger blush |
 | `worried` | brows, sweat drop, frown |
 | `frazzled` | sweat drop |
-| `tired` | half-closed lids, flat mouth, dimmer body |
+| `tired` | half-closed lids, flat mouth, dimmer body, empty juice carton |
 
 ## Theming
 
@@ -147,11 +147,11 @@ Every colour is a custom property with a dark default, set on `.patch`. Override
 | `--patch-cheek` | `#eeab94` | cheeks, heart |
 | `--patch-sun` | `#f0cf7e` | sun, moon, sparkles |
 | `--patch-rain` | `#9cc5e8` | rain, umbrella, sweat drop |
-| `--patch-scarf` | `#ee8b8b` | scarf, mug |
+| `--patch-scarf` | `#ee8b8b` | scarf, mug, carton straw |
 | `--patch-cap` | `#c8b8e8` | nightcap |
 | `--patch-cloud` | `#3a3b40` | cloud |
 | `--patch-snow` | `#ecebe8` | snowflakes, stars, pompom, steam |
-| `--patch-pole` | `#a09e99` | umbrella pole |
+| `--patch-pole` | `#a09e99` | umbrella pole, carton outline |
 | `--patch-highlight` | `rgba(255,255,255,0.35)` | body sheen, glint on the shades and mug |
 | `--patch-bubble-bg` | `#212226` | speech bubble |
 | `--patch-bubble-text` | `#ecebe8` | speech bubble text |
@@ -166,12 +166,13 @@ Every colour is a custom property with a dark default, set on `.patch`. Override
 | `--patch-petal` | `#f4bccb` | petals, butterfly, ice cream |
 | `--patch-tulip` | `#ee7b8b` | tulip |
 | `--patch-stem` | `#6fbf8f` | stems, rainbow, tree, confetti, lights |
-| `--patch-orange` | `#f39a3c` | bunting, pumpkin, lantern, carrot |
+| `--patch-orange` | `#f39a3c` | bunting, pumpkin, lantern, carrot, carton label |
 | `--patch-flag-red` | `#d84b4b` | flag, bunting, jester's hat, crown, Santa hat, lights |
 | `--patch-flag-blue` | `#3f6fc4` | flag, bunting, crown |
 | `--patch-brown` | `#b97a45` | oliebol, pepernoten, tree trunk, lantern stick |
 | `--patch-wood` | `#e9c46a` | klomp, ice cream cone |
 | `--patch-mitre` | `#d64545` | mitre |
+| `--patch-carton` | `#f4f3ef` | the empty juice carton when tired |
 
 ```css
 .light .patch {
@@ -186,7 +187,7 @@ All classes are prefixed `patch-` and all keyframes `patch-`. With `prefers-redu
 
 ## Jetpack Compose
 
-The same Patch for Android lives in `android/`, as a Compose library: the same art, moods, moves, weather dressing, poking and spring drag. Seasons and holidays are TypeScript only for now. JitPack builds it from a tag:
+The same Patch for Android lives in `android/`, as a Compose library: the same art, moods, moves, weather dressing, poking and spring drag. Seasons, holidays and the empty carton are TypeScript only for now. JitPack builds it from a tag:
 
 ```kotlin
 // settings.gradle.kts
@@ -197,7 +198,7 @@ dependencyResolutionManagement {
 }
 
 // build.gradle.kts
-implementation("com.github.JBlaak:Patch:v0.7.0")
+implementation("com.github.JBlaak:Patch:v0.8.0")
 ```
 
 ```kotlin

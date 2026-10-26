@@ -1,6 +1,6 @@
 {
   "name": "@jblaak/patch",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Patch, a small animated mint blob friend for personal projects.",
   "private": true,
   "type": "module",
