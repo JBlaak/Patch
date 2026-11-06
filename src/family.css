@@ -104,21 +104,17 @@
 /* Walking in, on arriving somewhere new. */
 .patch-fam-arriving .patch-fam-arrive { animation: patch-fam-arrive 2.2s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
 
-/* ---------- Places ---------- */
+/* ---------- Places ----------
+   Only small things move. A large shape that animates makes the whole SVG
+   repaint its area every frame, so skies, light and water stay still. */
 
 .patch-fam-twinkle { animation: patch-fam-twinkle 4s ease-in-out infinite; }
-.patch-fam-drift { animation: patch-fam-drift 40s ease-in-out infinite; }
-.patch-fam-rays { animation: patch-fam-rays 7s ease-in-out infinite; }
-.patch-fam-mist { animation: patch-fam-mist 16s ease-in-out infinite; }
-.patch-fam-firelight { animation: patch-fam-firelight 2.6s ease-in-out infinite; }
 .patch-fam-flame { animation: patch-fam-flick 0.9s ease-in-out infinite; }
 .patch-fam-f2 { animation-duration: 0.7s; animation-delay: -0.3s; }
 .patch-fam-f3 { animation-duration: 0.55s; animation-delay: -0.1s; }
 .patch-fam-smoke { transform-box: fill-box; transform-origin: 50% 50%; animation: patch-fam-smoke 7s ease-out infinite; }
 .patch-fam-ember { animation: patch-fam-ember 3s ease-out infinite; }
-.patch-fam-dapple { animation: patch-fam-twinkle 6s ease-in-out infinite; }
 .patch-fam-shimmer { animation: patch-fam-twinkle 2.4s ease-in-out infinite; }
-.patch-fam-surf { animation: patch-fam-surf 4s ease-in-out infinite; }
 .patch-fam-gull { animation: patch-fam-gull 28s linear infinite; }
 .patch-fam-pennant { transform-box: fill-box; transform-origin: 0% 50%; animation: patch-fam-pennant 1.4s ease-in-out infinite; }
 .patch-fam-lantern { animation: patch-fam-lantern 2.8s ease-in-out infinite; }
@@ -159,14 +155,9 @@
 @keyframes patch-fam-skate { 0% { transform: translateX(-80px); opacity: 0; } 5% { opacity: 1; } 92% { opacity: 1; } 100% { transform: translateX(1060px); opacity: 0; } }
 @keyframes patch-fam-arrive { 0% { transform: translateX(-640px); } 100% { transform: translateX(0); } }
 @keyframes patch-fam-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
-@keyframes patch-fam-drift { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(60px); } }
-@keyframes patch-fam-rays { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
-@keyframes patch-fam-mist { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(40px); } }
-@keyframes patch-fam-firelight { 0%, 100% { opacity: 0.85; } 40% { opacity: 1; } 70% { opacity: 0.78; } }
 @keyframes patch-fam-flick { 0%, 100% { transform: scale(1, 1); } 30% { transform: scale(0.94, 1.08); } 60% { transform: scale(1.05, 0.95); } }
 @keyframes patch-fam-smoke { 0% { opacity: 0; transform: translate(0, 0) scale(0.6); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(26px, -120px) scale(1.7); } }
 @keyframes patch-fam-ember { 0% { opacity: 0; transform: translate(0, 0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), -120px); } }
-@keyframes patch-fam-surf { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(16px); } }
 @keyframes patch-fam-gull { 0% { transform: translate(0, 0); } 100% { transform: translate(1100px, -40px); } }
 @keyframes patch-fam-pennant { 0%, 100% { transform: skewY(0); } 50% { transform: skewY(10deg); } }
 @keyframes patch-fam-lantern { 0%, 100% { opacity: 0.55; } 50% { opacity: 0.9; } }
@@ -177,6 +168,9 @@
 @keyframes patch-fam-rain { 0% { transform: translate(0, 0); } 100% { transform: translate(-30px, 440px); } }
 @keyframes patch-fam-snow { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 430px); } }
 @keyframes patch-fam-fall { 0% { transform: translate(0, -40px) rotate(0); } 100% { transform: translate(-80px, 460px) rotate(520deg); } }
+
+/* Held still while the host says so (a window in the background, say). */
+.patch-family-paused * { animation-play-state: paused !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .patch-family * { animation: none !important; }

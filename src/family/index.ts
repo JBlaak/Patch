@@ -16,6 +16,8 @@ export interface FamilyOptions {
 export interface FamilyHandle {
   /** Draw this scene, replacing whatever was there. */
   show(scene: FamilyScene): void;
+  /** Hold every animation still (true) or let it play again (false), e.g. while the window is in the background. */
+  pause(on: boolean): void;
   /** Remove the scene's DOM and listeners. */
   destroy(): void;
 }
@@ -63,6 +65,9 @@ export function mountFamily(container: HTMLElement, options: FamilyOptions = {})
         const again = root.querySelector<SVGElement>(`[data-member="${CSS.escape(focused)}"]`);
         again?.focus();
       }
+    },
+    pause(on) {
+      root.classList.toggle('patch-family-paused', on);
     },
     destroy() {
       root.removeEventListener('click', onClick);

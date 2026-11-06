@@ -14,7 +14,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.10.0"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.10.1"
 }
 ```
 
@@ -195,6 +195,8 @@ interface FamilyMember {
 - **Up to nine** members are drawn, the first in front. The middle of the bottom edge is left clear, so a host can stand Patch itself there.
 - **The scene** is a 12:5 stage that covers its container; give the container a size and, if you like, rounded corners. Members are focusable and show a name tag on hover and focus.
 - **Light.** Skies stay near graphite at every hour, so a scene sits quietly in a dark app; in a light app, frame it as a card.
+
+`family.pause(true)` holds the scene still (say, while the window is in the background) and `pause(false)` lets it play again. Only small things move, so a scene is cheap to keep on screen.
 
 `familyArt(scene)` returns the same scene as an SVG string, for hosts that render it themselves. `npm run preview:family` serves `preview/family.html`, a grid of every place; add `?time=night&count=9` to try other hours and crowds.
 
