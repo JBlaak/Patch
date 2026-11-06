@@ -1,6 +1,6 @@
 {
   "name": "@jblaak/patch",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Patch, a small animated mint blob friend for personal projects.",
   "private": true,
   "type": "module",
@@ -8,14 +8,16 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./patch.css": "./src/patch.css"
+    "./patch.css": "./src/patch.css",
+    "./family.css": "./src/family.css"
   },
   "files": [
     "src"
   ],
   "scripts": {
     "preview": "esbuild preview/preview.ts --bundle --format=esm --outdir=preview/dist --servedir=preview --serve=127.0.0.1:5199",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "preview:family": "esbuild preview/family.ts --bundle --format=esm --outdir=preview/dist --servedir=preview --serve=127.0.0.1:5198"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
