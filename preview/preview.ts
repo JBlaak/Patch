@@ -2,6 +2,7 @@ import '../src/patch.css';
 import {
   mountPatch,
   type PatchHoliday,
+  type PatchHolding,
   type PatchMood,
   type PatchMove,
   type PatchScene,
@@ -29,6 +30,8 @@ const HOLIDAYS: Array<PatchHoliday | 'none'> = [
   'kerst',
 ];
 
+const HOLDINGS: Array<PatchHolding | 'none'> = ['none', 'keys', 'padlock', 'keys-down'];
+
 const form = document.getElementById('controls') as HTMLFormElement;
 const stage = document.getElementById('stage') as HTMLElement;
 const themeButton = document.getElementById('theme') as HTMLButtonElement;
@@ -44,6 +47,7 @@ fill('sky', SKIES, 'clear');
 fill('time', TIMES, 'day');
 fill('season', SEASONS, 'none');
 fill('holiday', HOLIDAYS, 'none');
+fill('holding', HOLDINGS, 'none');
 
 // Poking replays the chosen scene with a wobble, the way a host would answer it.
 const patch = mountPatch(stage, {
@@ -58,6 +62,7 @@ function scene(): PatchScene {
   const sky = String(data.get('sky'));
   const season = String(data.get('season'));
   const holiday = String(data.get('holiday'));
+  const holding = String(data.get('holding'));
   return {
     move: data.get('move') as PatchMove,
     mood: data.get('mood') as PatchMood,
@@ -65,6 +70,7 @@ function scene(): PatchScene {
     time: data.get('time') as PatchTime,
     season: season === 'none' ? null : (season as PatchSeason),
     holiday: holiday === 'none' ? null : (holiday as PatchHoliday),
+    holding: holding === 'none' ? null : (holding as PatchHolding),
     line: String(data.get('line') ?? ''),
   };
 }

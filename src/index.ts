@@ -20,6 +20,13 @@ export type PatchHoliday =
   | 'sinterklaas'
   | 'kerst';
 
+/**
+ * Something Patch holds for the host, over whatever it wears: `keys` held up
+ * and jingled (an SSH key is wanted), a `padlock` held out (a secret is
+ * wanted), or `keys-down`, the keys put down on the ground (not now).
+ */
+export type PatchHolding = 'keys' | 'padlock' | 'keys-down';
+
 export interface PatchScene {
   move: PatchMove;
   mood: PatchMood;
@@ -32,6 +39,8 @@ export interface PatchScene {
   season?: PatchSeason | null;
   /** Wins over the season while set. */
   holiday?: PatchHoliday | null;
+  /** null/undefined = holding nothing extra. Takes the hand, and sets the face. */
+  holding?: PatchHolding | null;
 }
 
 export interface PatchHandle {
@@ -68,6 +77,10 @@ type Accessory =
   | 'cap'
   | 'mug'
   | 'carton'
+  // What a host hands Patch to hold.
+  | 'keys'
+  | 'padlock'
+  | 'keys-down'
   // Seasons and holidays.
   | 'rainbow'
   | 'bunting'
@@ -201,15 +214,20 @@ function accessoriesFor(scene: PatchScene): Accessory[] {
   return [...new Set(on)];
 }
 
+/** What Patch holds in its hand; only one fits. */
+const IN_HAND: ReadonlySet<Accessory> = new Set<Accessory>(['umbrella', 'carton', 'flag', 'lantern', 'ice-cream']);
+
 /**
  * Everything Patch has on. At the usage limit (`tired`) it holds up an empty
  * juice carton: it is out of juice, whatever the weather or the day. The
- * carton takes the hand, so the umbrella goes.
+ * carton takes the hand, so the umbrella goes. What the host hands it
+ * (`holding`) wins the hand over both.
  */
 function dressingFor(scene: PatchScene): Accessory[] {
-  const on = accessoriesFor(scene);
-  if (scene.mood !== 'tired') return on;
-  return [...on.filter((a) => a !== 'umbrella'), 'carton'];
+  let on = accessoriesFor(scene);
+  if (scene.mood === 'tired') on = [...on.filter((a) => a !== 'umbrella'), 'carton'];
+  if (!scene.holding) return on;
+  return [...on.filter((a) => !IN_HAND.has(a)), scene.holding];
 }
 
 function mouthFor(mood: PatchMood): Mouth {
