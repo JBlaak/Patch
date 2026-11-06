@@ -229,10 +229,12 @@ const pier: Place = {
   back: (l, id) => {
     const water = tone(l, '#3c5a66', 0.6);
     let shimmer = '';
-    for (let i = 0; i < 7; i++) {
-      const y = 240 + i * 22;
-      const w = 70 - i * 6 + (i % 2) * 20;
-      shimmer += `<rect class="patch-fam-shimmer${i % 2 ? ' patch-fam-d2' : ''}" x="${n(l.x - w / 2)}" y="${y}" width="${n(w)}" height="2.5" rx="1.2" fill="${l.color}" fill-opacity="0.45"/>`;
+    const r = rng(17);
+    for (let i = 0; i < 6; i++) {
+      const y = 238 + i * 9 + r() * 4;
+      const w = 54 - i * 7 + r() * 16;
+      const x = l.x - w / 2 + (r() - 0.5) * 30;
+      shimmer += `<rect class="patch-fam-shimmer${i % 2 ? ' patch-fam-d2' : ''}" x="${n(x)}" y="${n(y)}" width="${n(w)}" height="2" rx="1" fill="${l.color}" fill-opacity="${n(0.5 - i * 0.06)}"/>`;
     }
     const deck = tone(l, '#7d5a3a', 0.85);
     const posts = [60, 200, 340, 480, 620, 760, 900].map((x) => `<rect x="${x}" y="312" width="9" height="70" fill="${tone(l, '#4e3622', 0.9)}"/>`).join('');
