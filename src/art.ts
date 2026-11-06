@@ -10,6 +10,10 @@
  * props on the ground beside Patch, hats and held things in the body group so
  * they move with it.
  *
+ * What Patch holds for a host (`holding`: keys, a padlock, or the keys put
+ * down) is drawn the same way, from the "Patch with keys" design: the keys in
+ * the body group, in the hand; the put-down keys on the ground.
+ *
  * Nothing here is user-supplied: the only parameter is one of the three mouth
  * shapes below.
  */
@@ -26,6 +30,8 @@ const BURST = 'M0 -16 V-7 M0 7 V16 M-16 0 H-7 M7 0 H16 M-11 -11 L-5 -5 M5 5 L11 
 const BAT = 'M-12 0 Q-7 -7 -2 -2 Q0 -6 2 -2 Q7 -7 12 0 Q6 -2 2 3 Q0 1 -2 3 Q-6 -2 -12 0 Z';
 const HEART = 'M0 8 C -8 0, -14 -6, -8 -12 C -4 -16, 0 -12, 0 -9 C 0 -12, 4 -16, 8 -12 C 14 -6, 8 0, 0 8 Z';
 const LEAF_BIG = 'M0 -7 C 6 -3, 6 3, 0 7 C -6 3, -6 -3, 0 -7 Z';
+/** A key's bow, with its hole; the shaft and teeth hang below it. */
+const KEY_BOW = 'M0 -8 A8 8 0 1 1 0 8 A8 8 0 1 1 0 -8 Z M0 -3 A3 3 0 1 0 0 3 A3 3 0 1 0 0 -3 Z';
 const LEAF_SMALL = 'M0 -6 C 5 -3, 5 3, 0 6 C -5 3, -5 -3, 0 -6 Z';
 
 export function patchArt(mouth: Mouth): string {
@@ -151,6 +157,15 @@ export function patchArt(mouth: Mouth): string {
 <ellipse class="patch-ripple patch-d4 patch-s-rain" cx="150" cy="175" rx="7" ry="2.5" stroke-width="1.5"/>
 </g>
 <ellipse class="patch-shadow patch-f-shadow" cx="100" cy="172" rx="40" ry="6"/>
+<g class="patch-acc patch-acc-keys-down">
+<g transform="translate(166 164) rotate(-80)">
+<path class="patch-f-sun" d="${KEY_BOW}" fill-rule="evenodd"/>
+<rect class="patch-f-sun" x="-2" y="7" width="4" height="24" rx="1.5"/>
+<rect class="patch-f-sun" x="2" y="22" width="6" height="3.5" rx="1"/>
+<rect class="patch-f-sun" x="2" y="27.5" width="4" height="3.5" rx="1"/>
+</g>
+<circle class="patch-s-pole" cx="160" cy="160" r="7" stroke-width="2.5"/>
+</g>
 <g class="patch-acc patch-acc-leaves">
 <path class="patch-f-leaf-a" d="M58 170 C 62 164, 70 164, 74 170 C 70 174, 62 174, 58 170 Z"/>
 <path class="patch-f-leaf-b" d="M132 172 C 136 166, 144 166, 148 172 C 144 176, 136 176, 132 172 Z"/>
@@ -224,6 +239,37 @@ export function patchArt(mouth: Mouth): string {
 </g>
 </g>
 <path class="patch-arm patch-s-body" d="M138 130 Q156 116 160 98" stroke-width="10" stroke-linecap="round"/>
+<g class="patch-acc patch-acc-keys">
+<g class="patch-jingle">
+<circle class="patch-s-pole" cx="161" cy="80" r="8" stroke-width="2.5"/>
+<g transform="translate(156 96) rotate(16)">
+<path class="patch-f-sun" d="${KEY_BOW}" fill-rule="evenodd"/>
+<rect class="patch-f-sun" x="-2" y="7" width="4" height="24" rx="1.5"/>
+<rect class="patch-f-sun" x="2" y="22" width="6" height="3.5" rx="1"/>
+<rect class="patch-f-sun" x="2" y="27.5" width="4" height="3.5" rx="1"/>
+</g>
+<g transform="translate(170 94) rotate(-24) scale(0.82)">
+<path class="patch-f-cap" d="${KEY_BOW}" fill-rule="evenodd"/>
+<rect class="patch-f-cap" x="-2" y="7" width="4" height="22" rx="1.5"/>
+<rect class="patch-f-cap" x="-8" y="20" width="6" height="3.5" rx="1"/>
+<rect class="patch-f-cap" x="-6" y="25.5" width="4" height="3.5" rx="1"/>
+</g>
+</g>
+<path class="patch-jingle-marks patch-s-sun" d="M176 66 l6 -5 M180 78 h8 M146 66 l-5 -5" stroke-width="2.5" stroke-linecap="round"/>
+</g>
+<g class="patch-acc patch-acc-padlock">
+<path class="patch-s-body" d="M140 134 Q156 128 160 116" stroke-width="10" stroke-linecap="round"/>
+<g transform="translate(168 104)">
+<path class="patch-s-pole" d="M-9 -4 V-12 A9 9 0 0 1 9 -12 V-4" stroke-width="4" stroke-linecap="round"/>
+<rect class="patch-f-sun" x="-14" y="-6" width="28" height="24" rx="6"/>
+<circle class="patch-f-ink" cx="0" cy="3" r="3.4"/>
+<rect class="patch-f-ink" x="-1.4" y="4" width="2.8" height="7" rx="1.2"/>
+</g>
+<path class="patch-jingle-marks patch-s-sun" d="M188 78 l5 -4 M190 90 h7" stroke-width="2.5" stroke-linecap="round"/>
+</g>
+<g class="patch-acc patch-acc-keys-down">
+<path class="patch-s-body" d="M144 144 Q156 150 160 160" stroke-width="10" stroke-linecap="round"/>
+</g>
 <g class="patch-acc patch-acc-umbrella">
 <path class="patch-s-pole" d="M160 100 V 46" stroke-width="3" stroke-linecap="round"/>
 <path class="patch-f-rain" d="M124 50 C 128 26, 192 26, 196 50 C 190 44, 184 44, 178 50 C 172 44, 166 44, 160 50 C 154 44, 148 44, 142 50 C 136 44, 130 44, 124 50 Z"/>
@@ -324,9 +370,14 @@ export function patchArt(mouth: Mouth): string {
 <circle cx="124" cy="134" r="6" opacity="0.6"/>
 </g>
 <path class="patch-mood patch-mood-sweat patch-f-rain" d="M138 88 C 134 94, 134 98, 138 98 C 142 98, 142 94, 138 88 Z"/>
+<g class="patch-look">
 <g class="patch-eyes">
 <ellipse class="patch-eye patch-f-ink" cx="86" cy="118" rx="5" ry="7"/>
 <ellipse class="patch-eye patch-f-ink" cx="114" cy="118" rx="5" ry="7"/>
+<g class="patch-acc patch-acc-catchlight patch-f-snow">
+<circle cx="88" cy="115" r="1.6"/>
+<circle cx="116" cy="115" r="1.6"/>
+</g>
 <g class="patch-mood patch-mood-lids patch-f-body">
 <rect x="79" y="109" width="14" height="9"/>
 <rect x="107" y="109" width="14" height="9"/>
@@ -345,6 +396,7 @@ export function patchArt(mouth: Mouth): string {
 <path class="patch-happy patch-s-ink" d="M109 121 Q114 113 119 121" stroke-width="3" stroke-linecap="round"/>
 <path class="patch-smile patch-s-ink" d="${mouth}" stroke-width="3" stroke-linecap="round"/>
 <ellipse class="patch-o patch-f-ink" cx="100" cy="137" rx="4" ry="5"/>
+</g>
 </g>
 </g>
 </g>

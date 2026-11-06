@@ -14,7 +14,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.8.0"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.9.0"
 }
 ```
 
@@ -51,6 +51,7 @@ type PatchSeason = 'spring' | 'summer' | 'autumn' | 'winter';
 type PatchHoliday =
   | 'oud-en-nieuw' | 'carnaval' | 'valentijnsdag' | 'pasen' | 'koningsdag'
   | 'bevrijdingsdag' | 'halloween' | 'sint-maarten' | 'sinterklaas' | 'kerst';
+type PatchHolding = 'keys' | 'padlock' | 'keys-down';
 
 interface PatchScene {
   move: PatchMove;
@@ -60,6 +61,7 @@ interface PatchScene {
   sky?: PatchSky | null;          // null/undefined: dress by time of day only
   season?: PatchSeason | null;    // null/undefined: no season, dress by weather as below
   holiday?: PatchHoliday | null;  // wins over the season while set
+  holding?: PatchHolding | null;  // something to hold for the host; takes the hand
 }
 
 interface PatchHandle {
@@ -135,6 +137,18 @@ At the usage limit (`tired`) Patch holds up an empty juice carton, upside down: 
 | `frazzled` | sweat drop |
 | `tired` | half-closed lids, flat mouth, dimmer body, empty juice carton |
 
+### Holding
+
+A host can hand Patch something to hold, for a moment that needs explaining: asking for a key, say, before a password manager asks for it. It takes the hand, so it wins over the umbrella, the carton, the flag, the lantern and the ice cream, and it sets where Patch looks.
+
+| Holding | Patch | Face |
+| --- | --- | --- |
+| `keys` | holds a ring of two keys up and jingles it once | eyes up at the keys, mouth open, catchlights |
+| `padlock` | holds a small padlock out | brows up, eyes across at the padlock |
+| `keys-down` | has put the keys down on the ground | content squint |
+
+The keys use `--patch-sun` and `--patch-cap`, the ring and the shackle `--patch-pole`, the padlock `--patch-sun` with an `--patch-ink` keyhole. With `keys`, a `wave` leaves the arm still: the keys hang from it.
+
 ## Theming
 
 Every colour is a custom property with a dark default, set on `.patch`. Override them in your own stylesheet to match your theme:
@@ -187,7 +201,7 @@ All classes are prefixed `patch-` and all keyframes `patch-`. With `prefers-redu
 
 ## Jetpack Compose
 
-The same Patch for Android lives in `android/`, as a Compose library: the same art, moods, moves, weather dressing, poking and spring drag. Seasons, holidays and the empty carton are TypeScript only for now. JitPack builds it from a tag:
+The same Patch for Android lives in `android/`, as a Compose library: the same art, moods, moves, weather dressing, poking and spring drag. Seasons, holidays, the empty carton and holding are TypeScript only for now. JitPack builds it from a tag:
 
 ```kotlin
 // settings.gradle.kts
@@ -198,7 +212,7 @@ dependencyResolutionManagement {
 }
 
 // build.gradle.kts
-implementation("com.github.JBlaak:Patch:v0.8.0")
+implementation("com.github.JBlaak:Patch:v0.9.0")
 ```
 
 ```kotlin

@@ -244,7 +244,51 @@
 .patch-m-worried .patch-mood-sweat,
 .patch-m-frazzled .patch-mood-sweat,
 .patch-m-tired .patch-mood-lids,
-.patch-m-happy .patch-mood-blush { display: inline; }
+.patch-m-happy .patch-mood-blush,
+.patch-has-keys .patch-acc-keys,
+.patch-has-keys .patch-acc-catchlight,
+.patch-has-padlock .patch-acc-padlock,
+.patch-has-padlock .patch-mood-brows,
+.patch-has-keys-down .patch-acc-keys-down { display: inline; }
+
+/* ---------- Holding: keys, a padlock, the keys put down ---------- */
+
+/* The padlock and the put-down keys bring an arm of their own, lower down. */
+.patch-has-padlock .patch-arm,
+.patch-has-keys-down .patch-arm { display: none; }
+
+/* Keys held up: eyes on them, mouth open, and the ring jingles once. */
+.patch-has-keys .patch-look { transform: translate(3px, -3px); }
+/* The keys hang from the hand, so the arm holds still under a wave. */
+.patch-has-keys .patch-arm { animation: none; }
+.patch-has-keys .patch-o { opacity: 1; }
+.patch-has-keys .patch-smile { opacity: 0; }
+.patch-jingle {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: patch-jingle 1.4s ease-out 0.3s 1 both;
+}
+.patch-jingle-marks { animation: patch-jingle-marks 1.4s ease-out 0.3s 1 both; }
+
+/* Padlock: a curious look across at it. */
+.patch-has-padlock .patch-look { transform: translate(4px, 1px); }
+
+/* Keys put down: a content squint. */
+.patch-has-keys-down .patch-eye { display: none; }
+.patch-has-keys-down .patch-happy { opacity: 1; }
+
+@keyframes patch-jingle {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-12deg); }
+  40% { transform: rotate(9deg); }
+  60% { transform: rotate(-5deg); }
+  80% { transform: rotate(2deg); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes patch-jingle-marks {
+  0%, 10% { opacity: 0; }
+  30%, 100% { opacity: 1; }
+}
 
 .patch-acc-sun {
   transform-box: fill-box;
