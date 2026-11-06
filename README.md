@@ -14,7 +14,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.9.0"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.10.0"
 }
 ```
 
@@ -148,6 +148,55 @@ A host can hand Patch something to hold, for a moment that needs explaining: ask
 | `keys-down` | has put the keys down on the ground | content squint |
 
 The keys use `--patch-sun` and `--patch-cap`, the ring and the shackle `--patch-pole`, the padlock `--patch-sun` with an `--patch-ink` keyhole. With `keys`, a `wave` leaves the arm still: the keys hang from it.
+
+## The family
+
+Besides Patch itself, the package draws a whole family: one Patch per member, out somewhere on an adventure, each with a pose for what it is doing and up to four little helpers beside it. A host uses it to show what is running (sessions, jobs, builds) as a small living scene.
+
+```ts
+import { mountFamily } from '@jblaak/patch';
+import '@jblaak/patch/family.css';
+
+const family = mountFamily(document.getElementById('scene')!, {
+  onSelect: (id) => openSession(id), // a member was clicked or activated
+});
+
+family.show({
+  place: 'campfire',  // where they are
+  time: 'night',      // lights the scene: morning, day, evening or night
+  members: [
+    { id: 'a', name: 'switchboard', status: 'working', helpers: 3 },
+    { id: 'b', name: 'patch', status: 'blocked', helpers: 0 },
+    { id: 'c', name: 'notes', status: 'ready', helpers: 0 },
+  ],
+  weather: null,      // or 'rain' / 'snow' falling over the place
+  arriving: true,     // everyone walks in from the side, for a new place
+});
+```
+
+```ts
+type PatchPlace =
+  | 'campfire' | 'tents' | 'pier' | 'forest' | 'beach' | 'canal'
+  | 'allotment' | 'dunes' | 'orchard' | 'stargazing' | 'tulips' | 'sledding';
+type FamilyStatus = 'working' | 'blocked' | 'ready' | 'idle';
+
+interface FamilyMember {
+  id: string;        // handed back by onSelect
+  name: string;      // shown on hover; set as text, never markup
+  status: FamilyStatus;
+  helpers: number;   // at most four are drawn
+  tint?: string;     // body colour; defaults to a distinct pastel per member
+  detail?: string;   // the hover tag's second line
+}
+```
+
+- **Poses.** `working` is busy at the place's task, `blocked` holds up a "!" sign, `ready` holds what it made (a mug, a fish, a carrot…), `idle` dozes.
+- **Helpers** do the place's chore: roasting marshmallows, fetching logs or apples, watering sprouts, fishing, flying kites, sledding.
+- **Up to nine** members are drawn, the first in front. The middle of the bottom edge is left clear, so a host can stand Patch itself there.
+- **The scene** is a 12:5 stage that covers its container; give the container a size and, if you like, rounded corners. Members are focusable and show a name tag on hover and focus.
+- **Light.** Skies stay near graphite at every hour, so a scene sits quietly in a dark app; in a light app, frame it as a card.
+
+`familyArt(scene)` returns the same scene as an SVG string, for hosts that render it themselves. `npm run preview:family` serves `preview/family.html`, a grid of every place; add `?time=night&count=9` to try other hours and crowds.
 
 ## Theming
 
