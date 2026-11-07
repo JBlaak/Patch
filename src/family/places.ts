@@ -71,8 +71,7 @@ function skyDefs(light: Light, id: string): string {
     `<linearGradient id="${id}-haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${light.haze}" stop-opacity="0"/><stop offset="1" stop-color="${light.haze}" stop-opacity="0.7"/></linearGradient>` +
     `<linearGradient id="${id}-ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${light.color}" stop-opacity="0.22"/><stop offset="1" stop-color="${light.color}" stop-opacity="0"/></linearGradient>` +
     `<radialGradient id="${id}-pool"><stop offset="0" stop-color="#f39a3c" stop-opacity="0.32"/><stop offset="0.6" stop-color="#f39a3c" stop-opacity="0.07"/><stop offset="1" stop-color="#f39a3c" stop-opacity="0"/></radialGradient>` +
-    `<radialGradient id="${id}-vignette" cx="0.5" cy="0.55" r="0.75"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.55"/></radialGradient>` +
-    `<filter id="${id}-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter>`;
+    `<radialGradient id="${id}-vignette" cx="0.5" cy="0.55" r="0.75"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.55"/></radialGradient>`;
 }
 
 /** The sky with its sun or moon, stars at night and a few soft clouds by day. */
@@ -80,8 +79,8 @@ function sky(light: Light, id: string, opts: { clouds?: boolean; stars?: number 
   let out = `<rect width="${W}" height="${H}" fill="url(#${id}-sky)"/>`;
   if (light.stars) {
     const count = opts.stars ?? 1;
-    out += `<g fill="#ecebe8"><path class="patch-fam-twinkle" d="${dots(11, Math.round(40 * count), 0, W, 0, 210, 0.5, 1.4)}"/>` +
-      `<path class="patch-fam-twinkle patch-fam-d2" opacity="0.6" d="${dots(23, Math.round(55 * count), 0, W, 0, 230, 0.4, 1)}"/></g>`;
+    out += `<g fill="#ecebe8"><path d="${dots(11, Math.round(40 * count), 0, W, 0, 210, 0.5, 1.4)}"/>` +
+      `<path opacity="0.6" d="${dots(23, Math.round(55 * count), 0, W, 0, 230, 0.4, 1)}"/></g>`;
   }
   out += `<circle cx="${light.x}" cy="${light.y}" r="${light.glow}" fill="url(#${id}-glow)"/>`;
   out += light.kind === 'sun'
@@ -89,7 +88,7 @@ function sky(light: Light, id: string, opts: { clouds?: boolean; stars?: number 
     : `<circle cx="${light.x}" cy="${light.y}" r="16" fill="${light.color}"/><circle cx="${light.x + 7}" cy="${light.y - 5}" r="14" fill="${light.sky[0]}" opacity="0.92"/>`;
   if (opts.clouds !== false && (light.time === 'day' || light.time === 'morning')) {
     const c = mix(light.sky[2], '#ecebe8', light.time === 'day' ? 0.35 : 0.2);
-    out += `<g class="patch-fam-drift">${cloud(330, 92, 120, c, 0.5)}${cloud(640, 60, 90, c, 0.35)}</g>`;
+    out += `<g>${cloud(330, 92, 120, c, 0.5)}${cloud(640, 60, 90, c, 0.35)}</g>`;
   }
   return out;
 }
@@ -113,11 +112,11 @@ function rays(light: Light, id: string): string {
   const { x, y } = light;
   const spread = x < W / 2 ? 1 : -1;
   const ray = (a: number, b: number, o: number) => `<path d="M${x} ${y} L${n(x + spread * a)} ${H} L${n(x + spread * b)} ${H} Z" fill="url(#${id}-ray)" opacity="${o}"/>`;
-  return `<g class="patch-fam-rays">${ray(220, 360, 1)}${ray(470, 560, 0.7)}${ray(80, 150, 0.5)}</g>`;
+  return `<g>${ray(220, 360, 1)}${ray(470, 560, 0.7)}${ray(80, 150, 0.5)}</g>`;
 }
 
 function mist(light: Light): string {
-  return light.mist ? `<rect class="patch-fam-mist" x="-60" y="232" width="${W + 120}" height="30" rx="15" fill="${light.haze}" opacity="0.45"/>` : '';
+  return light.mist ? `<rect x="-60" y="232" width="${W + 120}" height="30" rx="15" fill="${light.haze}" opacity="0.45"/>` : '';
 }
 
 /** Dark, out-of-focus shapes at the edges that frame the scene. */
@@ -137,7 +136,7 @@ function frame(id: string, light: Light, kind: 'trunks' | 'grass' | 'reeds' | 's
     out += `<g stroke="${c}" stroke-width="4" stroke-linecap="round" fill="none"><path d="M70 420 Q66 340 76 300"/><path d="M84 420 Q86 350 98 316"/><path d="M${W - 80} 420 Q${W - 76} 340 ${W - 88} 296"/></g>` +
       `<g fill="${c}"><ellipse cx="76" cy="296" rx="4" ry="14"/><ellipse cx="${W - 88}" cy="292" rx="4" ry="14"/></g>`;
   }
-  return out ? `<g filter="url(#${id}-soft)">${out}</g>` : '';
+  return out ? `<g opacity="0.9">${out}</g>` : '';
 }
 
 function vignette(id: string): string {
@@ -164,7 +163,7 @@ function falling(kind: 'leaves' | 'snow' | 'petals' | 'rain'): string {
 }
 
 function fire(x: number, y: number, id: string): string {
-  return `<ellipse class="patch-fam-firelight" cx="${x}" cy="${y + 6}" rx="360" ry="110" fill="url(#${id}-pool)"/>` +
+  return `<ellipse cx="${x}" cy="${y + 6}" rx="360" ry="110" fill="url(#${id}-pool)"/>` +
     `<g fill="#3a3a40">${[-44, -24, 0, 24, 44].map((dx, i) => `<ellipse cx="${x + dx}" cy="${y + 12 + (i === 2 ? 4 : i % 2 ? 2 : -2)}" rx="10" ry="5"/>`).join('')}</g>` +
     `<g fill="#f39a3c" opacity="0.4">${[-44, -24, 0, 24, 44].map((dx, i) => `<ellipse cx="${x + dx}" cy="${y + 9 + (i === 2 ? 4 : i % 2 ? 2 : -2)}" rx="7" ry="2"/>`).join('')}</g>` +
     `<g transform="translate(${x - 50} ${y - 84})">` +
@@ -174,7 +173,7 @@ function fire(x: number, y: number, id: string): string {
     `<path class="patch-fam-flame" d="M50 14 C68 40 78 58 73 73 C70 83 60 88 50 88 C40 88 30 83 27 73 C22 58 32 40 50 14 Z" fill="url(#${id}-flame)"/>` +
     `<path class="patch-fam-flame patch-fam-f2" d="M50 32 C62 48 67 63 64 75 C61 83 55 86 50 86 C45 86 39 83 36 75 C33 63 38 48 50 32 Z" fill="#f39a3c"/>` +
     `<path class="patch-fam-flame patch-fam-f3" d="M50 50 C57 61 60 70 57 78 C55 83 52 85 50 85 C48 85 45 83 43 78 C40 70 43 61 50 50 Z" fill="url(#${id}-core)"/></g>` +
-    `<g fill="#ecebe8" opacity="0.07" filter="url(#${id}-soft)"><ellipse class="patch-fam-smoke" cx="${x}" cy="${y - 100}" rx="16" ry="11"/><ellipse class="patch-fam-smoke patch-fam-d2" cx="${x + 6}" cy="${y - 100}" rx="13" ry="9"/></g>`;
+    `<g fill="#ecebe8" opacity="0.06"><ellipse class="patch-fam-smoke" cx="${x}" cy="${y - 100}" rx="16" ry="11"/><ellipse class="patch-fam-smoke patch-fam-d2" cx="${x + 6}" cy="${y - 100}" rx="13" ry="9"/></g>`;
 }
 
 function embers(x: number, y: number): string {
@@ -188,7 +187,7 @@ function embers(x: number, y: number): string {
 
 function lightPool(x: number, y: number, light: Light, id: string): string {
   if (!light.rays) return '';
-  return `<ellipse class="patch-fam-dapple" cx="${x}" cy="${y}" rx="130" ry="20" fill="${light.color}" fill-opacity="0.045" filter="url(#${id}-soft)"/>`;
+  return `<ellipse cx="${x}" cy="${y}" rx="130" ry="20" fill="${light.color}" fill-opacity="0.04"/>`;
 }
 
 function woods(light: Light, id: string, seed: number): string {
@@ -277,7 +276,7 @@ const beach: Place = {
     const castle = tone(l, '#c9ae80', 0.9);
     return sky(l, id) + `<rect x="0" y="206" width="${W}" height="62" fill="${sea}"/>` + hazeBand(id, 196, 30, 0.6) + shimmer +
       `<rect x="0" y="262" width="${W}" height="16" fill="${wet}"/>` +
-      `<path class="patch-fam-surf" d="M-40 264 C40 258 120 270 200 263 C280 256 360 270 440 263 C520 256 600 270 680 263 C760 256 840 270 920 263 C1000 256 1080 270 1160 263" stroke="#ecebe8" stroke-opacity="0.45" stroke-width="2.5" fill="none"/>` +
+      `<path d="M-40 264 C40 258 120 270 200 263 C280 256 360 270 440 263 C520 256 600 270 680 263 C760 256 840 270 920 263 C1000 256 1080 270 1160 263" stroke="#ecebe8" stroke-opacity="0.45" stroke-width="2.5" fill="none"/>` +
       `<rect x="0" y="276" width="${W}" height="124" fill="${sand}"/>` +
       `<g transform="translate(450 312)"><rect x="0" y="-26" width="60" height="26" fill="${castle}"/><rect x="5" y="-46" width="16" height="20" fill="${castle}"/><rect x="39" y="-46" width="16" height="20" fill="${castle}"/><rect x="24" y="-12" width="12" height="12" rx="6" fill="${wet}"/><path d="M47 -46 V-60" stroke="#a09e99" stroke-width="1.5"/><path d="M47 -60 L58 -56 L47 -52 Z" fill="#8fd8bf"/></g>` +
       `<g transform="translate(760 300)"><path d="M0 0 L6 -86" stroke="#ecebe8" stroke-width="2.5"/><path d="M-44 -74 C-30 -104 44 -104 56 -74 Z" fill="#ee8b8b"/><path d="M-8 -74 C-6 -98 18 -98 20 -74 Z" fill="#ecebe8"/></g>`;
