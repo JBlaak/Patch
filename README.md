@@ -14,7 +14,7 @@ Plain TypeScript and CSS. No framework, no runtime dependencies, no build step: 
 
 ```json
 "dependencies": {
-  "@jblaak/patch": "github:JBlaak/Patch#v0.10.1"
+  "@jblaak/patch": "github:JBlaak/Patch#v0.11.0"
 }
 ```
 
@@ -70,17 +70,31 @@ interface PatchHandle {
 }
 
 interface PatchOptions {
-  onPoke?: () => void;              // called on click, tap or Enter/Space
-  onGrab?: () => void;              // called when a press turns into a drag
-  onDrop?: (fling: Fling) => void;  // called on let-go; { distance (px), speed (px/ms) }
+  onPoke?: () => void;                    // called on click, tap or Enter/Space
+  onGrab?: () => void;                    // called when a press turns into a drag
+  onDrop?: (fling: Fling) => void;        // called on let-go
+  onPet?: (stage: PetStage) => void;      // called when a rub pets Patch, and when it gets sleepy
+  stage?: HTMLElement;                    // the box a thrown Patch stays in; defaults to the container
 }
+
+interface Fling {
+  distance: number;  // how far from home Patch was let go, in px
+  speed: number;     // how fast the pointer was moving, in px/ms
+  thrown: boolean;   // speed > THROW_SPEED (1.2 px/ms): Patch was thrown
+}
+
+type PetStage = 'petted' | 'sleepy';
 
 function mountPatch(container: HTMLElement, options?: PatchOptions): PatchHandle;
 ```
 
 With any of these, Patch is a real `<button aria-label="Poke Patch">` that squishes on hover and press; answer a poke with another `appear`, and keyboard focus stays on Patch across it.
 
-Patch can also be dragged: it trails the pointer on a spring, the leash stretches the further it is pulled, it tilts with its direction and stretches with speed, and makes a surprised face. Let go, it springs home with an overshoot and a wobble. A press that moved is a drag, not a poke. Answering `onDrop` with an `appear` does not cut the way home short. With reduced motion Patch still follows the pointer but snaps home without the wobble. `--patch-focus` sets the focus ring colour (default: the body colour).
+Patch can also be dragged: it trails the pointer on a spring, the leash stretches the further it is pulled, it tilts with its direction and stretches with speed, and makes a surprised face. Let go, it springs home with an overshoot and a wobble. A press that moved is a drag, not a poke. Answering `onDrop` with an `appear` does not cut the way home short. With reduced motion Patch still follows the pointer but snaps home without the wobble.
+
+Let go while the pointer is still moving fast (over `THROW_SPEED`, 1.2 px/ms) and Patch is thrown: it flies off the way the hand was going, falls, bounces off the sides of its stage, squishes flat where it lands on the floor, and wobbles home from there. The stage is the container, or `stage` if given; its bottom edge is the floor, and Patch never leaves it. A slower release springs home as before. `onDrop` says which it was with `thrown`. With reduced motion nothing is thrown and nothing squishes.
+
+Rubbing the pointer back and forth over Patch without pressing (a few sideways turns within a second) pets it: it closes its eyes, smiles and purrs, and `onPet('petted')` is called. Keep rubbing for a few seconds and it gets sleepy, with z's (`onPet('sleepy')`). Stop for about 600 ms and it opens its eyes again. The face lives on the `.patch` root, so answering `onPet` with an `appear` keeps it. A click still pokes and a press still drags; a touch screen has no hover, so petting needs a mouse or trackpad. With reduced motion Patch still shows the petted face, without the purr. `RubDetector`, the rub detection on its own, is exported too: feed it `{ x, y, t }` samples and it answers `'none'`, `'petted'` or `'sleepy'`. `--patch-focus` sets the focus ring colour (default: the body colour).
 
 Nothing shows until the first `appear`. A move plays once per `appear`; breathing and blinking loop.
 
@@ -308,6 +322,7 @@ cd android
 npm install
 npm run preview    # http://127.0.0.1:5199
 npm run typecheck
+npm test           # the rub detector and the throw, with node --test
 ```
 
 The preview has controls for move, mood, sky, time, season, holiday and line, an Appear button, and a light/dark background toggle.

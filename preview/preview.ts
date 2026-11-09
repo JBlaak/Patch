@@ -49,12 +49,14 @@ fill('season', SEASONS, 'none');
 fill('holiday', HOLIDAYS, 'none');
 fill('holding', HOLDINGS, 'none');
 
-// Poking replays the chosen scene with a wobble, the way a host would answer it.
+// Poking replays the chosen scene with a wobble, the way a host would answer it;
+// a drop, a throw and a pet get a line of their own.
 const patch = mountPatch(stage, {
   onPoke: () => patch.appear({ ...scene(), move: 'jelly', line: 'Hey, that tickles!' }),
-  onDrop: ({ speed }) => patch.appear(
-    speed > 1.5 ? { ...scene(), move: 'twirl', line: 'Wheee!' } : { ...scene(), move: 'jelly', line: 'Boing!' },
+  onDrop: ({ thrown }) => patch.appear(
+    thrown ? { ...scene(), move: 'jelly', line: 'Wheee!' } : { ...scene(), move: 'jelly', line: 'Boing!' },
   ),
+  onPet: (stage) => patch.appear({ ...scene(), move: 'love', line: stage === 'sleepy' ? 'Zzz…' : 'Purrr…' }),
 });
 
 function scene(): PatchScene {

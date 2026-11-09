@@ -631,6 +631,41 @@
   72% { transform: scale(1.02, 0.98); }
 }
 
+/* ---------- Petting and throwing ---------- */
+
+/* Thrown: as surprised in the air as when held. On the root, since a host
+   answering the throw rebuilds the scene mid-flight. */
+.patch-flying .patch-poke { cursor: default; }
+.patch-flying .patch-o { animation: none; opacity: 1; }
+.patch-flying .patch-smile { animation: none; opacity: 0; }
+
+/* Petted: eyes closed in a content squint, a smile, warm cheeks, and a purr.
+   Also on the root, so a host answering with a line keeps the face. These come
+   after the moves, so they win over a move's own eyes and mouth. */
+.patch-petted .patch-eye { display: none; }
+.patch-petted .patch-happy { animation: none; opacity: 1; }
+.patch-petted .patch-smile { animation: none; opacity: 1; }
+.patch-petted .patch-o { animation: none; opacity: 0; }
+.patch-petted .patch-cheek { animation: none; opacity: 0.85; }
+.patch-petted .patch-poke .patch-svg { animation: patch-purr 0.22s ease-in-out infinite alternate; }
+
+/* Sleepy: eyes shut to slits, z's drifting up, and a slower, deeper purr. */
+.patch-petted.patch-sleepy .patch-eye { display: inline; animation: none; transform: scaleY(0.12); }
+.patch-petted.patch-sleepy .patch-happy { opacity: 0; }
+.patch-petted.patch-sleepy .patch-z { animation: patch-z 2.4s ease-out infinite; }
+.patch-petted.patch-sleepy .patch-z-b { animation-delay: 0.6s; }
+.patch-petted.patch-sleepy .patch-z-c { animation-delay: 1.2s; }
+.patch-petted.patch-sleepy .patch-poke .patch-svg { animation: patch-purr-deep 0.9s ease-in-out infinite alternate; }
+
+@keyframes patch-purr {
+  from { transform: translateX(-0.6px) scale(1.01, 0.99); }
+  to { transform: translateX(0.6px) scale(0.99, 1.01); }
+}
+@keyframes patch-purr-deep {
+  from { transform: scale(1.02, 0.98); }
+  to { transform: scale(0.99, 1.01); }
+}
+
 /*
  * Reduced motion: no moves, no drift, no falling. Patch and the bubble still
  * appear, standing still in their resting pose (one-shot extras such as
