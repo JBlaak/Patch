@@ -1,7 +1,11 @@
 import { MOUTH_FLAT, MOUTH_FROWN, MOUTH_SMILE, patchArt, type Mouth } from './art';
 import { makeDraggable, type Fling } from './drag';
+import { makePettable, type PetStage } from './pet';
 
 export type { Fling } from './drag';
+export type { PetStage } from './pet';
+export { RubDetector, type PointerSample, type RubState } from './rub';
+export { THROW_SPEED } from './fling';
 
 export type PatchMove = 'wave' | 'hop' | 'twirl' | 'peek' | 'doze' | 'jelly' | 'love' | 'stretch';
 export type PatchMood = 'calm' | 'happy' | 'worried' | 'frazzled' | 'tired';
@@ -63,6 +67,17 @@ export interface PatchOptions {
    * an `appear` is fine; the way home carries on.
    */
   onDrop?: (fling: Fling) => void;
+  /**
+   * Called when rubbing the pointer back and forth over Patch pets it
+   * (`petted`: eyes closed, purring), and again if the rub goes on long
+   * enough to make it `sleepy`. Answering with an `appear` keeps the face.
+   */
+  onPet?: (stage: PetStage) => void;
+  /**
+   * The box a thrown Patch stays inside; its bottom edge is the floor Patch
+   * lands on. Defaults to `container`.
+   */
+  stage?: HTMLElement;
 }
 
 type Accessory =
@@ -244,8 +259,9 @@ export function mountPatch(container: HTMLElement, options: PatchOptions = {}): 
   const root = document.createElement('div');
   root.className = 'patch';
   container.appendChild(root);
-  const interactive = !!(options.onPoke || options.onGrab || options.onDrop);
-  const drag = interactive ? makeDraggable(root, options) : null;
+  const interactive = !!(options.onPoke || options.onGrab || options.onDrop || options.onPet);
+  const drag = interactive ? makeDraggable(root, options, () => options.stage ?? container) : null;
+  const pet = interactive ? makePettable(root, options) : null;
 
   return {
     appear(scene) {
@@ -272,6 +288,7 @@ export function mountPatch(container: HTMLElement, options: PatchOptions = {}): 
         art.setAttribute('aria-label', 'Poke Patch');
         // First, so a press that turned into a drag is not also a poke.
         drag.attach(art);
+        pet?.attach(art);
         if (options.onPoke) art.addEventListener('click', options.onPoke);
       }
 
@@ -284,6 +301,7 @@ export function mountPatch(container: HTMLElement, options: PatchOptions = {}): 
     },
     destroy() {
       drag?.destroy();
+      pet?.destroy();
       root.remove();
     },
   };
