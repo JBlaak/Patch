@@ -130,7 +130,8 @@ function tool(t: Tool, tint: string, waterY: number | null): string {
   if (t === 'spade') {
     return `<g class="patch-fam-dig">${arm('M138 130 Q156 120 162 104', tint)}<path d="M162 104 L176 150" stroke="#9a7550" stroke-width="4" stroke-linecap="round"/><path d="M168 146 H186 L182 166 H172 Z" fill="#a09e99"/></g>`;
   }
-  return arm('M138 130 Q156 116 160 98', tint, 'patch-fam-busy');
+  // Empty-handed work: the arm stays low in front, tinkering, so it never reads as a hand up with a question.
+  return arm('M138 136 Q154 142 166 136', tint, 'patch-fam-busy');
 }
 
 /** The face and body of a Patch, lit for the hour, in art units. */
@@ -150,8 +151,9 @@ export function body(tint: string, light: Light, litSide: 'left' | 'right', stat
     const lookX = litSide === 'left' ? -2 : 2;
     face = `<g class="patch-fam-blink"><ellipse cx="${86 + lookX}" cy="118" rx="${rx}" ry="${ry}" fill="${INK}"/><ellipse cx="${114 + lookX}" cy="118" rx="${rx}" ry="${ry}" fill="${INK}"/>` +
       `<circle cx="${84 + lookX}" cy="${baby ? 113 : 115}" r="${baby ? 3 : 1.6}" fill="#ffffff" opacity="0.75"/><circle cx="${112 + lookX}" cy="${baby ? 113 : 115}" r="${baby ? 3 : 1.6}" fill="#ffffff" opacity="0.75"/></g>`;
+    // Needing the host is nothing to fret about: a bright, open smile while it waves.
     face += status === 'blocked'
-      ? `<path d="M93 138 Q100 133 107 138" stroke="${INK}" stroke-width="3" stroke-linecap="round" fill="none"/><g stroke="${INK}" stroke-width="2.5" stroke-linecap="round"><path d="M80 106 L91 102"/><path d="M109 102 L120 106"/></g><path d="M140 86 C136 92 136 96 140 96 C144 96 144 92 140 86 Z" fill="#9cc5e8"/>`
+      ? `<path d="M92 134 Q100 144 108 134" stroke="${INK}" stroke-width="3" stroke-linecap="round" fill="none"/>`
       : `<path d="${baby ? 'M92 139 Q100 146 108 139' : 'M95 136 Q100 139 105 136'}" stroke="${INK}" stroke-width="${baby ? 5 : 3}" stroke-linecap="round" fill="none"/>`;
   }
   return `<path d="${BODY}" fill="${tint}"/>` +
