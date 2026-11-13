@@ -291,3 +291,16 @@ export function mountPatch(container: HTMLElement, options: PatchOptions = {}): 
 
 export { mountFamily, familyArt, placeLabel, MAX_MEMBERS, PATCH_PLACES } from './family/index';
 export type { FamilyHandle, FamilyMember, FamilyOptions, FamilyScene, FamilyStatus, PatchPlace } from './family/index';
+
+export {
+  mountManager,
+  managerArt,
+  managerClasses,
+  managerLabel,
+  managerName,
+  managerPose,
+  countTag,
+  MANAGER_KINDS,
+  MANAGER_STATES,
+} from './manager/index';
+export type { CountTag, ManagerHandle, ManagerKind, ManagerOptions, ManagerScene, ManagerState } from './manager/index';

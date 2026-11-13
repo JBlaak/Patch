@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Patch managers preview</title>
+<link rel="stylesheet" href="dist/managers.css">
+<style>
+  body { margin: 0; padding: 24px; background: #141517; color: #a09e99; font: 13px/1.4 system-ui, sans-serif; }
+  body.light { background: #f6f5f2; color: #4a4946; }
+  body.light .patch-manager {
+    --patch-ink: #1d1e21;
+    --patch-shadow: rgba(0, 0, 0, 0.12);
+    --patch-spider: #2b2c30;
+    --patch-count-bg: #ffffff;
+    --patch-count-text: #1d1e21;
+    --patch-count-edge: rgba(0, 0, 0, 0.08);
+    --patch-count-shadow: rgba(0, 0, 0, 0.25);
+    --patch-count-hot-bg: #fde6dc;
+    --patch-count-hot-text: #b4532f;
+    --patch-label: #6e6d69;
+    --patch-paper: #ffffff;
+    --patch-paper-edge: rgba(0, 0, 0, 0.14);
+  }
+  .row { display: flex; gap: 32px; align-items: flex-end; padding: 16px 8px 24px; }
+  figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  figcaption { font-size: 12px; }
+</style>
+</head>
+<body><div id="grid"></div><script type="module" src="dist/managers.js"></script></body>
+</html>
