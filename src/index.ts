@@ -299,8 +299,19 @@ export {
   managerLabel,
   managerName,
   managerPose,
+  managerStates,
   countTag,
+  INBOX_STATES,
   MANAGER_KINDS,
-  MANAGER_STATES,
+  MERGE_STATES,
 } from './manager/index';
-export type { CountTag, ManagerHandle, ManagerKind, ManagerOptions, ManagerScene, ManagerState } from './manager/index';
+export type {
+  CountTag,
+  InboxState,
+  ManagerHandle,
+  ManagerKind,
+  ManagerOptions,
+  ManagerScene,
+  ManagerState,
+  MergeState,
+} from './manager/index';
