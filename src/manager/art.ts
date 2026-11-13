@@ -10,8 +10,8 @@
  * Layering, back to front: what stands or dangles around Patch (the jar, the
  * spiders, the ticket held up high and the arms holding it), the shadow, then
  * the body group, which bobs: the body, what Patch wears, its face, its arms
- * and what it holds. Hats sit above the eyes and the satchel hangs on the
- * belly, so no prop covers the face; the spectacles are part of it.
+ * and what it holds. Hats sit above the eyes and the satchel and the whistle
+ * hang on the belly, so no prop covers the face; the spectacles are part of it.
  */
 
 import type { ManagerKind, ManagerState } from './scene';
@@ -189,17 +189,91 @@ function pencil(): string {
 </g>`;
 }
 
+/* ---------- Merge manager: the signaller ---------- */
+
+/** A signal flag on its pole, held at (0, 0): furled and pointing down, or flying from the top. */
+function flag(colour: 'go' | 'ask', furled: boolean): string {
+  if (furled) {
+    return `<path class="patch-mgr-s-flag-pole" d="M0 0 V34" stroke-width="4" stroke-linecap="round"/>
+<path class="patch-mgr-f-flag-${colour}" d="M1 2 C 13 8, 11 20, 2 28 Z"/>`;
+  }
+  return `<path class="patch-mgr-s-flag-pole" d="M0 0 V-46" stroke-width="4" stroke-linecap="round"/>
+<path class="patch-mgr-flutter patch-mgr-f-flag-${colour}" d="M2 -46 H30 Q26 -38 30 -30 H2 Z"/>`;
+}
+
+function radio(): string {
+  return `<g transform="translate(136 96) rotate(-12)">
+<path class="patch-mgr-signal patch-mgr-s-signal" d="M15 -15 Q19 -11 15 -7 M19 -19 Q26 -11 19 -3" stroke-width="2" stroke-linecap="round"/>
+<path class="patch-mgr-s-radio" d="M10 0 V-12" stroke-width="2.5" stroke-linecap="round"/>
+<rect class="patch-mgr-f-radio" x="0" y="0" width="13" height="24" rx="3"/>
+<rect class="patch-mgr-f-radio-screen" x="3" y="4" width="7" height="6" rx="1"/>
+</g>`;
+}
+
+function mergeBody(): string {
+  return `${face(`<g class="${only('moving', 'needsYou')}">
+<path class="patch-mgr-s-ink" d="M81 121 Q86 113 91 121 M109 121 Q114 113 119 121" stroke-width="3" stroke-linecap="round"/>
+</g>`)}
+<path class="patch-mgr-s-lanyard" d="M84 148 Q100 157 116 148" stroke-width="2.5" stroke-linecap="round"/>
+<rect class="patch-mgr-f-whistle" x="95" y="151" width="10" height="11" rx="2.5"/>
+<circle class="patch-mgr-f-ink" cx="100" cy="158" r="1.6"/>
+<g class="patch-mgr-cap">
+<path class="patch-mgr-f-cap" d="M64 92 C 66 64, 134 64, 136 92 Z"/>
+<rect class="patch-mgr-f-cap-band" x="64" y="84" width="72" height="7"/>
+<ellipse class="patch-mgr-f-cap-peak" cx="100" cy="93" rx="42" ry="5.5"/>
+<circle class="patch-mgr-f-cap-band" cx="100" cy="76" r="4"/>
+</g>
+${arm('M60 132 Q46 140 42 150')}
+<g class="${only('idle')}">
+${arm('M140 132 Q154 140 158 150')}
+<g transform="translate(160 140) rotate(-8)">${flag('go', true)}</g>
+</g>
+<g class="${only('moving')}">
+<g class="patch-mgr-wave">
+${arm('M140 124 Q156 104 160 88')}
+<g transform="translate(160 88) rotate(6)">${flag('go', false)}</g>
+</g>
+</g>
+<g class="${only('needsYou')}">
+<g class="patch-mgr-raise">
+${arm('M140 126 Q158 98 152 72')}
+<g transform="translate(152 72) rotate(4)">${flag('ask', false)}</g>
+</g>
+</g>
+<g class="${only('remote')}">
+${radio()}
+${arm('M140 132 Q156 124 148 116')}
+</g>`;
+}
+
+interface Outfit {
+  /** Behind the shadow and the body. */
+  back?: () => string;
+  /** In the bobbing group, behind the body. */
+  behind?: () => string;
+  /** In the bobbing group, over the body. */
+  body: () => string;
+  /** In front of everything. */
+  front?: () => string;
+}
+
+const OUTFITS: Record<ManagerKind, Outfit> = {
+  bug: { back: bugBack, body: bugBody, front: bugFront },
+  issue: { back: issueBack, behind: pencil, body: issueBody },
+  merge: { body: mergeBody },
+};
+
 export function managerArt(kind: ManagerKind): string {
-  const bug = kind === 'bug';
+  const outfit = OUTFITS[kind];
   return `<svg class="patch-mgr-svg" viewBox="-10 -24 220 214" fill="none" overflow="visible" aria-hidden="true" focusable="false">
-${bug ? bugBack() : issueBack()}
+${outfit.back?.() ?? ''}
 <ellipse class="patch-mgr-f-shadow" cx="100" cy="170" rx="46" ry="6"/>
 <g class="patch-mgr-bob">
-${bug ? '' : pencil()}
+${outfit.behind?.() ?? ''}
 <path class="patch-mgr-f-body" d="${BODY}"/>
 <path class="patch-mgr-s-highlight" d="M68 96 C 74 84, 86 78, 96 78" stroke-width="5" stroke-linecap="round"/>
-${bug ? bugBody() : issueBody()}
+${outfit.body()}
 </g>
-${bug ? bugFront() : ''}
+${outfit.front?.() ?? ''}
 </svg>`;
 }

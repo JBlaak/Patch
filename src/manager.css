@@ -1,6 +1,6 @@
 /*
- * The manager Patches: the Bug manager (an explorer) and the Issue manager
- * (a bookkeeper). Every class starts with `patch-mgr` and every keyframe with
+ * The manager Patches: the Bug manager (an explorer), the Issue manager
+ * (a bookkeeper) and the Merge manager (a signaller). Every class starts with `patch-mgr` and every keyframe with
  * `patch-mgr`, so nothing collides with the host's CSS or with patch.css.
  * Colours are custom properties with dark defaults; the host overrides them
  * on `.patch-manager` (or any ancestor rule that wins) to fit its theme.
@@ -10,6 +10,7 @@
   /* Body colours, one per kind. */
   --patch-bug-body: #c8b8e8;
   --patch-issue-body: #f0cf7e;
+  --patch-merge-body: #9cc5e8;
 
   --patch-ink: #141517;
   --patch-cheek: #eeab94;
@@ -48,6 +49,19 @@
   --patch-paper-edge: transparent;
   --patch-ticket-dot: #ee8b8b;
 
+  /* The signaller's kit. */
+  --patch-cap: #2c3e66;
+  --patch-cap-peak: #1d2a45;
+  --patch-cap-band: #f0cf7e;
+  --patch-lanyard: #2c3e66;
+  --patch-whistle: #e4e2dc;
+  --patch-flag-pole: #8a5a35;
+  --patch-flag-go: #6cc4a1;
+  --patch-flag-ask: #eeab94;
+  --patch-radio: #2b2c30;
+  --patch-radio-screen: #9cc5e8;
+  --patch-signal: #a09e99;
+
   /* The unread tag and the label. */
   --patch-count-bg: #212226;
   --patch-count-text: #ecebe8;
@@ -68,6 +82,7 @@
 }
 
 .patch-mgr-k-issue { --patch-mgr-fill: var(--patch-issue-body); }
+.patch-mgr-k-merge { --patch-mgr-fill: var(--patch-merge-body); }
 
 .patch-mgr-scene {
   display: flex;
@@ -155,14 +170,26 @@
 .patch-mgr-part { display: none; }
 .patch-mgr-s-calm .patch-mgr-for-calm,
 .patch-mgr-s-unread .patch-mgr-for-unread,
-.patch-mgr-s-urgent .patch-mgr-for-urgent { display: inline; }
+.patch-mgr-s-urgent .patch-mgr-for-urgent,
+.patch-mgr-s-idle .patch-mgr-for-idle,
+.patch-mgr-s-moving .patch-mgr-for-moving,
+.patch-mgr-s-needsYou .patch-mgr-for-needsYou,
+.patch-mgr-s-remote .patch-mgr-for-remote { display: inline; }
 
 .patch-mgr-s-urgent .patch-mgr-smile { display: none; }
+
+/* The signaller's eyes close in a smile while it waves a lane on or asks. */
+.patch-mgr-s-moving .patch-mgr-eye,
+.patch-mgr-s-moving .patch-mgr-f-catchlight,
+.patch-mgr-s-needsYou .patch-mgr-eye,
+.patch-mgr-s-needsYou .patch-mgr-f-catchlight { display: none; }
 
 .patch-mgr-look { transition: transform 0.3s ease; }
 /* The explorer peers at the spider; the bookkeeper looks up at its ticket. */
 .patch-mgr-k-bug.patch-mgr-s-unread .patch-mgr-look { transform: translate(4px, -1px); }
 .patch-mgr-k-issue.patch-mgr-s-unread .patch-mgr-look { transform: translate(2px, -4px); }
+/* The signaller listens to its radio. */
+.patch-mgr-k-merge.patch-mgr-s-remote .patch-mgr-look { transform: translate(4px, -1px); }
 
 /* The helmet slips while bugs are swarming. */
 .patch-mgr-helmet {
@@ -212,6 +239,18 @@
 .patch-mgr-s-paper-edge { stroke: var(--patch-paper-edge); }
 .patch-mgr-s-paper-line { stroke: var(--patch-paper-line); }
 .patch-mgr-f-ticket-dot { fill: var(--patch-ticket-dot); }
+.patch-mgr-f-cap { fill: var(--patch-cap); }
+.patch-mgr-f-cap-peak { fill: var(--patch-cap-peak); }
+.patch-mgr-f-cap-band { fill: var(--patch-cap-band); }
+.patch-mgr-f-whistle { fill: var(--patch-whistle); }
+.patch-mgr-s-lanyard { stroke: var(--patch-lanyard); }
+.patch-mgr-s-flag-pole { stroke: var(--patch-flag-pole); }
+.patch-mgr-f-flag-go { fill: var(--patch-flag-go); }
+.patch-mgr-f-flag-ask { fill: var(--patch-flag-ask); }
+.patch-mgr-f-radio { fill: var(--patch-radio); }
+.patch-mgr-s-radio { stroke: var(--patch-radio); }
+.patch-mgr-f-radio-screen { fill: var(--patch-radio-screen); }
+.patch-mgr-s-signal { stroke: var(--patch-signal); }
 
 /* ---------- Motion ---------- */
 
@@ -234,6 +273,17 @@
 .patch-mgr-flail.patch-mgr-d2 { transform-origin: 0% 100%; }
 .patch-mgr-raise { animation: patch-mgr-raise 1.6s ease-in-out infinite; }
 .patch-mgr-z { opacity: 0; animation: patch-mgr-z 3s ease-out infinite; }
+.patch-mgr-wave {
+  transform-box: view-box;
+  transform-origin: 140px 124px;
+  animation: patch-mgr-wave 1.1s ease-in-out infinite;
+}
+.patch-mgr-flutter {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  animation: patch-mgr-flutter 0.7s ease-in-out infinite;
+}
+.patch-mgr-signal { animation: patch-mgr-signal 1.4s ease-in-out infinite; }
 .patch-mgr-z-b { animation-delay: 1.5s; }
 .patch-mgr-d2 { animation-delay: -0.4s; }
 .patch-mgr-d3 { animation-delay: -0.8s; }
@@ -266,13 +316,25 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
 }
+@keyframes patch-mgr-wave {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(12deg); }
+}
+@keyframes patch-mgr-flutter {
+  0%, 100% { transform: none; }
+  50% { transform: skewY(-8deg) scaleX(0.92); }
+}
+@keyframes patch-mgr-signal {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
 @keyframes patch-mgr-z {
   0% { opacity: 0; transform: translate(0, 0); }
   30% { opacity: 1; }
   100% { opacity: 0; transform: translate(8px, -14px); }
 }
 
-/* Still poses: no dangling, scurrying, flailing or bobbing. */
+/* Still poses: no dangling, scurrying, flailing, waving or bobbing. */
 @media (prefers-reduced-motion: reduce) {
   .patch-mgr-select .patch-mgr-svg,
   .patch-mgr-select:hover .patch-mgr-svg,

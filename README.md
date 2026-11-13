@@ -202,7 +202,7 @@ interface FamilyMember {
 
 ## The managers
 
-Two more Patches with a job, for a host that keeps an inbox: the **Bug manager** (lavender, an explorer in a pith helmet with a satchel) and the **Issue manager** (sun yellow, a bookkeeper with round spectacles, a green visor and a pencil behind its head). Each has three states and an unread tag.
+Three more Patches with a job. Two for a host that keeps an inbox: the **Bug manager** (lavender, an explorer in a pith helmet with a satchel) and the **Issue manager** (sun yellow, a bookkeeper with round spectacles, a green visor and a pencil behind its head), each with three states and an unread tag. And one for a host that lands pull requests: the **Merge manager** (sky blue, a signaller in a navy peaked cap with a sun band, a whistle and a flag), with four states and a tag for what needs you.
 
 ```ts
 import { mountManager } from '@jblaak/patch';
@@ -221,12 +221,16 @@ bugs.show({ kind: 'bug', state: 'urgent', count: 5, label: 'Bug manager' });
 | `bug` | a spider asleep in a jar | a spider dangling on its thread, the magnifying glass held up to it | a scurrying cluster of spiders, helmet slipping, worried brows |
 | `issue` | a red ledger under its arm | a ticket held high over its head | as `unread` |
 
-- **Count.** `count` draws the unread tag in the top corner, `99+` past 99. It hides at 0, and turns peach for an urgent Bug manager.
-- **Label.** Shown under the figure, as text; defaults to "Bug manager" or "Issue manager". The accessible name is the label plus the unread count.
-- **Width.** `--patch-manager-width` (default `150px`) sets how wide the figure is drawn.
-- **Reduced motion.** No dangling, scurrying, flailing or bobbing; the poses hold still.
+| Kind | `idle` | `moving` | `needsYou` | `remote` |
+| --- | --- | --- | --- | --- |
+| `merge` | nothing landed: the flag furled at its side | a head updating, testing or merging: the green flag waving | something needs you: the peach flag raised, smiling as it asks | a VM merges: the radio to its face (the host draws the badge naming the VM) |
 
-`managerClasses(scene)`, `countTag(scene)` and `managerName(scene)` are the pure parts, and `managerArt(kind)` returns the SVG. Colours are custom properties on `.patch-manager`: `--patch-bug-body`, `--patch-issue-body`, the kit colours (`--patch-helmet`, `--patch-satchel`, `--patch-spider`, `--patch-visor`, `--patch-ledger`, `--patch-paper`, …) and the tag's (`--patch-count-bg`, `--patch-count-text`, `--patch-count-hot-bg`, `--patch-count-hot-text`, `--patch-label`); see `src/manager.css` for the full list and their dark defaults. `npm run preview:managers` serves `preview/managers.html`, every kind and state; add `?theme=light` for a light host.
+- **Count.** `count` draws the unread tag in the top corner, `99+` past 99. It hides at 0, and turns peach for an urgent Bug manager. The Merge manager's count is what needs you, always peach; a busy lane shows in the pose, not a number.
+- **Label.** Shown under the figure, as text; defaults to "Bug manager", "Issue manager" or "Merge manager". The accessible name is the label plus the count ("2 unread", or "2 need you" for the Merge manager).
+- **Width.** `--patch-manager-width` (default `150px`) sets how wide the figure is drawn.
+- **Reduced motion.** No dangling, scurrying, flailing, waving or bobbing; the poses hold still.
+
+`managerClasses(scene)`, `countTag(scene)` and `managerName(scene)` are the pure parts, `managerStates(kind)` lists the states a kind takes (`INBOX_STATES` or `MERGE_STATES`), and `managerArt(kind)` returns the SVG. Colours are custom properties on `.patch-manager`: `--patch-bug-body`, `--patch-issue-body`, `--patch-merge-body`, the kit colours (`--patch-helmet`, `--patch-satchel`, `--patch-spider`, `--patch-visor`, `--patch-ledger`, `--patch-paper`, `--patch-cap`, `--patch-flag-go`, `--patch-flag-ask`, `--patch-radio`, …) and the tag's (`--patch-count-bg`, `--patch-count-text`, `--patch-count-hot-bg`, `--patch-count-hot-text`, `--patch-label`); see `src/manager.css` for the full list and their dark defaults. `npm run preview:managers` serves `preview/managers.html`, every kind and state; add `?theme=light` for a light host.
 
 ## Theming
 

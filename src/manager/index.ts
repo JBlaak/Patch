@@ -2,8 +2,18 @@ import { managerArt } from './art';
 import { countTag, managerClasses, managerLabel, managerName, type ManagerKind, type ManagerScene } from './scene';
 
 export { managerArt } from './art';
-export { countTag, managerClasses, managerLabel, managerName, managerPose, MANAGER_KINDS, MANAGER_STATES } from './scene';
-export type { CountTag, ManagerKind, ManagerScene, ManagerState } from './scene';
+export {
+  countTag,
+  managerClasses,
+  managerLabel,
+  managerName,
+  managerPose,
+  managerStates,
+  INBOX_STATES,
+  MANAGER_KINDS,
+  MERGE_STATES,
+} from './scene';
+export type { CountTag, InboxState, ManagerKind, ManagerScene, ManagerState, MergeState } from './scene';
 
 export interface ManagerOptions {
   /**
@@ -24,7 +34,7 @@ export interface ManagerHandle {
 }
 
 /**
- * Mount a manager Patch (the Bug manager or the Issue manager) into
+ * Mount a manager Patch (the Bug manager, the Issue manager or the Merge manager) into
  * `container`. Nothing shows until the first `show`.
  * Remember to include `@jblaak/patch/manager.css`.
  */
