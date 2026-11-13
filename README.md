@@ -200,6 +200,34 @@ interface FamilyMember {
 
 `familyArt(scene)` returns the same scene as an SVG string, for hosts that render it themselves. `npm run preview:family` serves `preview/family.html`, a grid of every place; add `?time=night&count=9` to try other hours and crowds.
 
+## The managers
+
+Two more Patches with a job, for a host that keeps an inbox: the **Bug manager** (lavender, an explorer in a pith helmet with a satchel) and the **Issue manager** (sun yellow, a bookkeeper with round spectacles, a green visor and a pencil behind its head). Each has three states and an unread tag.
+
+```ts
+import { mountManager } from '@jblaak/patch';
+import '@jblaak/patch/manager.css';
+
+const bugs = mountManager(document.getElementById('bugs')!, {
+  onSelect: () => openBugPage(), // optional; with it the figure is a button
+});
+
+// Call as often as you like: only what changed is touched.
+bugs.show({ kind: 'bug', state: 'urgent', count: 5, label: 'Bug manager' });
+```
+
+| Kind | `calm` | `unread` | `urgent` |
+| --- | --- | --- | --- |
+| `bug` | a spider asleep in a jar | a spider dangling on its thread, the magnifying glass held up to it | a scurrying cluster of spiders, helmet slipping, worried brows |
+| `issue` | a red ledger under its arm | a ticket held high over its head | as `unread` |
+
+- **Count.** `count` draws the unread tag in the top corner, `99+` past 99. It hides at 0, and turns peach for an urgent Bug manager.
+- **Label.** Shown under the figure, as text; defaults to "Bug manager" or "Issue manager". The accessible name is the label plus the unread count.
+- **Width.** `--patch-manager-width` (default `150px`) sets how wide the figure is drawn.
+- **Reduced motion.** No dangling, scurrying, flailing or bobbing; the poses hold still.
+
+`managerClasses(scene)`, `countTag(scene)` and `managerName(scene)` are the pure parts, and `managerArt(kind)` returns the SVG. Colours are custom properties on `.patch-manager`: `--patch-bug-body`, `--patch-issue-body`, the kit colours (`--patch-helmet`, `--patch-satchel`, `--patch-spider`, `--patch-visor`, `--patch-ledger`, `--patch-paper`, …) and the tag's (`--patch-count-bg`, `--patch-count-text`, `--patch-count-hot-bg`, `--patch-count-hot-text`, `--patch-label`); see `src/manager.css` for the full list and their dark defaults. `npm run preview:managers` serves `preview/managers.html`, every kind and state; add `?theme=light` for a light host.
+
 ## Theming
 
 Every colour is a custom property with a dark default, set on `.patch`. Override them in your own stylesheet to match your theme:
@@ -308,6 +336,7 @@ cd android
 npm install
 npm run preview    # http://127.0.0.1:5199
 npm run typecheck
+npm test           # the managers' state → classes mapping
 ```
 
 The preview has controls for move, mood, sky, time, season, holiday and line, an Appear button, and a light/dark background toggle.

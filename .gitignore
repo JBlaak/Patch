@@ -6,3 +6,4 @@ android/build
 android/patch/build
 android/local.properties
 android/.kotlin
+test/dist

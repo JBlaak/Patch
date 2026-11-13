@@ -1,6 +1,6 @@
 {
   "name": "@jblaak/patch",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "Patch, a small animated mint blob friend for personal projects.",
   "private": true,
   "type": "module",
@@ -9,7 +9,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./patch.css": "./src/patch.css",
-    "./family.css": "./src/family.css"
+    "./family.css": "./src/family.css",
+    "./manager.css": "./src/manager.css"
   },
   "files": [
     "src"
@@ -17,9 +18,12 @@
   "scripts": {
     "preview": "esbuild preview/preview.ts --bundle --format=esm --outdir=preview/dist --servedir=preview --serve=127.0.0.1:5199",
     "typecheck": "tsc",
-    "preview:family": "esbuild preview/family.ts --bundle --format=esm --outdir=preview/dist --servedir=preview --serve=127.0.0.1:5198"
+    "preview:family": "esbuild preview/family.ts --bundle --format=esm --outdir=preview/dist --servedir=preview --serve=127.0.0.1:5198",
+    "preview:managers": "esbuild preview/managers.ts --bundle --format=esm --outdir=preview/dist --servedir=preview --serve=127.0.0.1:5197",
+    "test": "esbuild test/*.test.ts --bundle --platform=node --format=esm --outdir=test/dist --log-level=warning && node --test test/dist/*.js"
   },
   "devDependencies": {
+    "@types/node": "^26.6.6",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
   }
