@@ -71,7 +71,7 @@ function skyDefs(light: Light, id: string): string {
     `<linearGradient id="${id}-haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${light.haze}" stop-opacity="0"/><stop offset="1" stop-color="${light.haze}" stop-opacity="0.7"/></linearGradient>` +
     `<linearGradient id="${id}-ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${light.color}" stop-opacity="0.22"/><stop offset="1" stop-color="${light.color}" stop-opacity="0"/></linearGradient>` +
     `<radialGradient id="${id}-pool"><stop offset="0" stop-color="#f39a3c" stop-opacity="0.32"/><stop offset="0.6" stop-color="#f39a3c" stop-opacity="0.07"/><stop offset="1" stop-color="#f39a3c" stop-opacity="0"/></radialGradient>` +
-    `<radialGradient id="${id}-vignette" cx="0.5" cy="0.55" r="0.75"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.55"/></radialGradient>`;
+    `<radialGradient id="${id}-vignette" cx="0.5" cy="0.55" r="0.75"><stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="${light.vignette}"/></radialGradient>`;
 }
 
 /** The sky with its sun or moon, stars at night and a few soft clouds by day. */
