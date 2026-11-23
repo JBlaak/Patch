@@ -75,13 +75,15 @@ test('each kind draws a part for every pose it can take', () => {
   const bug = art('bug');
   const issue = art('issue');
   const merge = art('merge');
+  const schedule = art('schedule');
   /* When */
-  const poses = (svg: string, kind: 'bug' | 'issue' | 'merge') =>
+  const poses = (svg: string, kind: 'bug' | 'issue' | 'merge' | 'schedule') =>
     managerStates(kind).filter((p) => svg.includes(`patch-mgr-for-${p}`));
   /* Then */
   assert.deepEqual(poses(bug, 'bug'), ['calm', 'unread', 'urgent']);
   assert.deepEqual(poses(issue, 'issue'), ['calm', 'unread']);
   assert.deepEqual(poses(merge, 'merge'), ['idle', 'moving', 'needsYou', 'remote']);
+  assert.deepEqual(poses(schedule, 'schedule'), ['calm', 'running', 'needsYou']);
 });
 
 test('an idle Merge manager draws its idle pose with no tag', () => {
@@ -149,9 +151,64 @@ test('the signaller waves its flag only while a lane moves, and raises it only w
 
 test('the art takes every colour from a class, never a literal', () => {
   /* Given */
-  const svgs = [art('bug'), art('issue'), art('merge')];
+  const svgs = [art('bug'), art('issue'), art('merge'), art('schedule')];
   /* When */
   const literals = svgs.flatMap((svg) => svg.match(/(fill|stroke)="(?!none)[^"]*"/g) ?? []);
   /* Then */
   assert.deepEqual(literals, []);
+});
+
+test('a calm Schedule manager draws its calm pose with no tag', () => {
+  /* Given */
+  const scene = { kind: 'schedule', state: 'calm', count: 0 } as const;
+  /* When */
+  const classes = managerClasses(scene);
+  /* Then */
+  assert.deepEqual(classes, ['patch-mgr-scene', 'patch-mgr-k-schedule', 'patch-mgr-s-calm']);
+  assert.equal(managerName(scene), 'Schedule manager');
+});
+
+test('a running Schedule manager shows the run in its pose, not its count', () => {
+  /* Given */
+  const scene = { kind: 'schedule', state: 'running' } as const;
+  /* When */
+  const classes = managerClasses(scene);
+  /* Then */
+  assert.deepEqual(classes, ['patch-mgr-scene', 'patch-mgr-k-schedule', 'patch-mgr-s-running']);
+  assert.deepEqual(managerStates('schedule'), ['calm', 'running', 'needsYou']);
+});
+
+test('a Schedule manager counts the runs that need you in peach', () => {
+  /* Given */
+  const scene = { kind: 'schedule', state: 'needsYou', count: 2 } as const;
+  /* When */
+  const classes = managerClasses(scene);
+  /* Then */
+  assert.deepEqual(classes, ['patch-mgr-scene', 'patch-mgr-k-schedule', 'patch-mgr-s-needsYou', 'patch-mgr-counted', 'patch-mgr-hot']);
+  assert.deepEqual(countTag(scene), { shown: true, text: '2', hot: true });
+});
+
+test('the Schedule manager\'s accessible name says how many runs need you', () => {
+  /* Given */
+  const one = { kind: 'schedule', state: 'needsYou', count: 1 } as const;
+  const three = { kind: 'schedule', state: 'calm', count: 3, label: 'Schedules' } as const;
+  /* When */
+  const names = [managerName(one), managerName(three)];
+  /* Then */
+  assert.deepEqual(names, ['Schedule manager, 1 needs you', 'Schedules, 3 need you']);
+});
+
+test('Father Time holds the hourglass up only while a run goes, and pops the monocle only when one needs you', () => {
+  /* Given */
+  const svg = art('schedule');
+  /* When */
+  const partOf = (marker: string) => {
+    const at = svg.indexOf(marker);
+    const opener = svg.lastIndexOf('patch-mgr-for-', at);
+    return svg.slice(opener, svg.indexOf('"', opener)).replace('patch-mgr-for-', '');
+  };
+  /* Then */
+  assert.equal(partOf('patch-mgr-stream'), 'running');
+  assert.equal(partOf('d="M124 122'), 'needsYou');
+  assert.equal(partOf('translate(176 152)'), 'calm');
 });

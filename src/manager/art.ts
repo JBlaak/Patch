@@ -8,10 +8,12 @@
  * the scene is in one of them. Nothing here is user-supplied.
  *
  * Layering, back to front: what stands or dangles around Patch (the jar, the
- * spiders, the ticket held up high and the arms holding it), the shadow, then
+ * spiders, the ticket held up high and the arms holding it, the hourglass at
+ * rest), the shadow, then
  * the body group, which bobs: the body, what Patch wears, its face, its arms
  * and what it holds. Hats sit above the eyes and the satchel and the whistle
- * hang on the belly, so no prop covers the face; the spectacles are part of it.
+ * hang on the belly, so no prop covers the face; the spectacles, the monocle
+ * and the white brows are part of it, and the beard hangs under the mouth.
  */
 
 import type { ManagerKind, ManagerState } from './scene';
@@ -246,6 +248,62 @@ ${arm('M140 132 Q156 124 148 116')}
 </g>`;
 }
 
+/* ---------- Schedule manager: a gentle Father Time ---------- */
+
+/**
+ * A small wooden hourglass centred on (0, 0), 22 wide and 36 tall: two wooden
+ * plates, the glass, and its sand at rest in the top bulb, running through the
+ * neck, or all run out into the bottom.
+ */
+function hourglass(sand: 'top' | 'running' | 'bottom'): string {
+  const grains =
+    sand === 'top'
+      ? `<path class="patch-mgr-f-sand" d="M-6 -11 Q0 -10 6 -11 Q4 -4 0 -1 Q-4 -4 -6 -11 Z"/>
+<path class="patch-mgr-f-sand" d="M-6 15 Q0 12 6 15 Z"/>`
+      : sand === 'running'
+        ? `<path class="patch-mgr-f-sand" d="M-5 -8 Q0 -7 5 -8 Q3 -3 0 -1 Q-3 -3 -5 -8 Z"/>
+<path class="patch-mgr-stream patch-mgr-s-sand" d="M0 0 V13" stroke-width="1.2" stroke-dasharray="2 1.5"/>
+<path class="patch-mgr-f-sand" d="M-6 15 Q0 8 6 15 Z"/>`
+        : `<path class="patch-mgr-f-sand" d="M-7 15 Q-6 6 0 4 Q6 6 7 15 Z"/>`;
+  return `<path class="patch-mgr-f-hourglass-glass patch-mgr-s-hourglass-edge" d="M-8 -15 Q-8 -4 0 0 Q8 -4 8 -15 Z M-8 15 Q-8 4 0 0 Q8 4 8 15 Z" stroke-width="1.2"/>
+${grains}
+<rect class="patch-mgr-f-hourglass" x="-11" y="-18" width="22" height="3.5" rx="1.75"/>
+<rect class="patch-mgr-f-hourglass" x="-11" y="14.5" width="22" height="3.5" rx="1.75"/>`;
+}
+
+/** At rest on the floor to Patch's right; it does not bob. */
+function scheduleBack(): string {
+  return `<g class="${only('calm')}"><g transform="translate(176 152)">${hourglass('top')}</g></g>`;
+}
+
+function scheduleBody(): string {
+  return `${face(`<g class="${only('calm', 'running')}">
+<path class="patch-mgr-s-beard" d="M78 106 Q86 102 94 105 M106 105 Q114 102 122 106" stroke-width="3" stroke-linecap="round"/>
+<circle class="patch-mgr-f-lens patch-mgr-s-monocle" cx="114" cy="118" r="11" stroke-width="2.5"/>
+</g>
+<path class="${only('needsYou')} patch-mgr-s-beard" d="M79 102 Q87 105 95 100 M105 100 Q113 105 121 102" stroke-width="3" stroke-linecap="round"/>`)}
+<path class="${only('running')} patch-mgr-s-ink" d="M95 134 Q100 136.5 105 134" stroke-width="3" stroke-linecap="round"/>
+<path class="${only('needsYou')} patch-mgr-s-ink" d="M94 137 Q100 132 106 137" stroke-width="3" stroke-linecap="round"/>
+<path class="${only('needsYou')} patch-mgr-f-sweat" d="M140 96 C 136 102, 136 106, 140 106 C 144 106, 144 102, 140 96 Z"/>
+<path class="patch-mgr-f-beard" d="M82 139 Q100 146 118 139 C 118 152 109 160 100 164 C 91 160 82 152 82 139 Z"/>
+<g class="${only('calm')}">
+${arm('M60 132 Q46 140 42 150')}
+${arm('M140 132 Q150 138 152 148')}
+</g>
+<g class="${only('running')}">
+${arm('M60 132 Q46 140 42 150')}
+${arm('M138 128 Q150 116 156 108')}
+<g transform="translate(162 88)">${hourglass('running')}</g>
+</g>
+<g class="${only('needsYou')}">
+<path class="patch-mgr-s-monocle" d="M124 122 Q134 138 132 150" stroke-width="1.2"/>
+<circle class="patch-mgr-f-lens patch-mgr-s-monocle" cx="133" cy="158" r="8" stroke-width="2.5"/>
+${arm('M140 132 Q150 138 152 148')}
+${arm('M60 128 Q46 122 40 114')}
+<g transform="translate(32 96) rotate(-14)">${hourglass('bottom')}</g>
+</g>`;
+}
+
 interface Outfit {
   /** Behind the shadow and the body. */
   back?: () => string;
@@ -261,6 +319,7 @@ const OUTFITS: Record<ManagerKind, Outfit> = {
   bug: { back: bugBack, body: bugBody, front: bugFront },
   issue: { back: issueBack, behind: pencil, body: issueBody },
   merge: { body: mergeBody },
+  schedule: { back: scheduleBack, body: scheduleBody },
 };
 
 export function managerArt(kind: ManagerKind): string {

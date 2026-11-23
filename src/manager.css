@@ -1,6 +1,7 @@
 /*
  * The manager Patches: the Bug manager (an explorer), the Issue manager
- * (a bookkeeper) and the Merge manager (a signaller). Every class starts with `patch-mgr` and every keyframe with
+ * (a bookkeeper), the Merge manager (a signaller) and the Schedule manager
+ * (a gentle Father Time). Every class starts with `patch-mgr` and every keyframe with
  * `patch-mgr`, so nothing collides with the host's CSS or with patch.css.
  * Colours are custom properties with dark defaults; the host overrides them
  * on `.patch-manager` (or any ancestor rule that wins) to fit its theme.
@@ -11,6 +12,7 @@
   --patch-bug-body: #c8b8e8;
   --patch-issue-body: #f0cf7e;
   --patch-merge-body: #9cc5e8;
+  --patch-schedule-body: #a9d39e;
 
   --patch-ink: #141517;
   --patch-cheek: #eeab94;
@@ -62,6 +64,14 @@
   --patch-radio-screen: #9cc5e8;
   --patch-signal: #a09e99;
 
+  /* Father Time's kit. */
+  --patch-beard: #f4f3ef;
+  --patch-monocle: #e9c46a;
+  --patch-hourglass: #b97a45;
+  --patch-hourglass-glass: rgba(156, 197, 232, 0.22);
+  --patch-hourglass-edge: rgba(156, 197, 232, 0.5);
+  --patch-sand: #e9c46a;
+
   /* The unread tag and the label. */
   --patch-count-bg: #212226;
   --patch-count-text: #ecebe8;
@@ -83,6 +93,7 @@
 
 .patch-mgr-k-issue { --patch-mgr-fill: var(--patch-issue-body); }
 .patch-mgr-k-merge { --patch-mgr-fill: var(--patch-merge-body); }
+.patch-mgr-k-schedule { --patch-mgr-fill: var(--patch-schedule-body); }
 
 .patch-mgr-scene {
   display: flex;
@@ -173,16 +184,20 @@
 .patch-mgr-s-urgent .patch-mgr-for-urgent,
 .patch-mgr-s-idle .patch-mgr-for-idle,
 .patch-mgr-s-moving .patch-mgr-for-moving,
+.patch-mgr-s-running .patch-mgr-for-running,
 .patch-mgr-s-needsYou .patch-mgr-for-needsYou,
 .patch-mgr-s-remote .patch-mgr-for-remote { display: inline; }
 
 .patch-mgr-s-urgent .patch-mgr-smile { display: none; }
+/* Father Time draws its own smaller mouth while a run goes, and frowns when one needs you. */
+.patch-mgr-k-schedule.patch-mgr-s-running .patch-mgr-smile,
+.patch-mgr-k-schedule.patch-mgr-s-needsYou .patch-mgr-smile { display: none; }
 
 /* The signaller's eyes close in a smile while it waves a lane on or asks. */
-.patch-mgr-s-moving .patch-mgr-eye,
-.patch-mgr-s-moving .patch-mgr-f-catchlight,
-.patch-mgr-s-needsYou .patch-mgr-eye,
-.patch-mgr-s-needsYou .patch-mgr-f-catchlight { display: none; }
+.patch-mgr-k-merge.patch-mgr-s-moving .patch-mgr-eye,
+.patch-mgr-k-merge.patch-mgr-s-moving .patch-mgr-f-catchlight,
+.patch-mgr-k-merge.patch-mgr-s-needsYou .patch-mgr-eye,
+.patch-mgr-k-merge.patch-mgr-s-needsYou .patch-mgr-f-catchlight { display: none; }
 
 .patch-mgr-look { transition: transform 0.3s ease; }
 /* The explorer peers at the spider; the bookkeeper looks up at its ticket. */
@@ -190,6 +205,8 @@
 .patch-mgr-k-issue.patch-mgr-s-unread .patch-mgr-look { transform: translate(2px, -4px); }
 /* The signaller listens to its radio. */
 .patch-mgr-k-merge.patch-mgr-s-remote .patch-mgr-look { transform: translate(4px, -1px); }
+/* Father Time glances up at the hourglass it holds. */
+.patch-mgr-k-schedule.patch-mgr-s-running .patch-mgr-look { transform: translate(2px, -2px); }
 
 /* The helmet slips while bugs are swarming. */
 .patch-mgr-helmet {
@@ -251,6 +268,14 @@
 .patch-mgr-s-radio { stroke: var(--patch-radio); }
 .patch-mgr-f-radio-screen { fill: var(--patch-radio-screen); }
 .patch-mgr-s-signal { stroke: var(--patch-signal); }
+.patch-mgr-f-beard { fill: var(--patch-beard); }
+.patch-mgr-s-beard { stroke: var(--patch-beard); }
+.patch-mgr-s-monocle { stroke: var(--patch-monocle); }
+.patch-mgr-f-hourglass { fill: var(--patch-hourglass); }
+.patch-mgr-f-hourglass-glass { fill: var(--patch-hourglass-glass); }
+.patch-mgr-s-hourglass-edge { stroke: var(--patch-hourglass-edge); }
+.patch-mgr-f-sand { fill: var(--patch-sand); }
+.patch-mgr-s-sand { stroke: var(--patch-sand); }
 
 /* ---------- Motion ---------- */
 
@@ -284,6 +309,8 @@
   animation: patch-mgr-flutter 0.7s ease-in-out infinite;
 }
 .patch-mgr-signal { animation: patch-mgr-signal 1.4s ease-in-out infinite; }
+/* The sand stream trickles: a few stepped frames of a dashed line, nothing per frame. */
+.patch-mgr-stream { animation: patch-mgr-trickle 0.6s steps(4) infinite; }
 .patch-mgr-z-b { animation-delay: 1.5s; }
 .patch-mgr-d2 { animation-delay: -0.4s; }
 .patch-mgr-d3 { animation-delay: -0.8s; }
@@ -328,13 +355,17 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
+@keyframes patch-mgr-trickle {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -3.5; }
+}
 @keyframes patch-mgr-z {
   0% { opacity: 0; transform: translate(0, 0); }
   30% { opacity: 1; }
   100% { opacity: 0; transform: translate(8px, -14px); }
 }
 
-/* Still poses: no dangling, scurrying, flailing, waving or bobbing. */
+/* Still poses: no dangling, scurrying, flailing, waving, trickling or bobbing. */
 @media (prefers-reduced-motion: reduce) {
   .patch-mgr-select .patch-mgr-svg,
   .patch-mgr-select:hover .patch-mgr-svg,

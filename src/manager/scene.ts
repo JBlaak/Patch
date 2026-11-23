@@ -5,9 +5,10 @@
 
 /**
  * `bug` is the Bug manager (an explorer), `issue` the Issue manager (a
- * bookkeeper), `merge` the Merge manager (a signaller).
+ * bookkeeper), `merge` the Merge manager (a signaller), `schedule` the
+ * Schedule manager (a gentle Father Time).
  */
-export type ManagerKind = 'bug' | 'issue' | 'merge';
+export type ManagerKind = 'bug' | 'issue' | 'merge' | 'schedule';
 
 /**
  * The inbox managers' states. `calm`: nothing unread. `unread`: something to
@@ -24,11 +25,20 @@ export type InboxState = 'calm' | 'unread' | 'urgent';
  */
 export type MergeState = 'idle' | 'moving' | 'needsYou' | 'remote';
 
-export type ManagerState = InboxState | MergeState;
+/**
+ * The Schedule manager's states. `calm`: every run went fine or has been seen,
+ * the hourglass standing at rest. `running`: a run is going, the hourglass
+ * held up with its sand running. `needsYou`: a run failed, hit its limit or
+ * was missed; worried, monocle popped out, the sand run out.
+ */
+export type ScheduleState = 'calm' | 'running' | 'needsYou';
+
+export type ManagerState = InboxState | MergeState | ScheduleState;
 
 interface SceneBase {
   /**
-   * Unread items, or for the Merge manager the pull requests that need you.
+   * Unread items; for the Merge manager the pull requests that need you, for
+   * the Schedule manager the runs that need you.
    * The tag is hidden at 0 (or when left out).
    */
   count?: number;
@@ -39,17 +49,31 @@ interface SceneBase {
 export type ManagerScene = SceneBase & (
   | { kind: 'bug' | 'issue'; state: InboxState }
   | { kind: 'merge'; state: MergeState }
+  | { kind: 'schedule'; state: ScheduleState }
 );
 
-export const MANAGER_KINDS: readonly ManagerKind[] = ['bug', 'issue', 'merge'];
+export const MANAGER_KINDS: readonly ManagerKind[] = ['bug', 'issue', 'merge', 'schedule'];
 export const INBOX_STATES: readonly InboxState[] = ['calm', 'unread', 'urgent'];
 export const MERGE_STATES: readonly MergeState[] = ['idle', 'moving', 'needsYou', 'remote'];
+export const SCHEDULE_STATES: readonly ScheduleState[] = ['calm', 'running', 'needsYou'];
 
-const NAMES: Record<ManagerKind, string> = { bug: 'Bug manager', issue: 'Issue manager', merge: 'Merge manager' };
+const NAMES: Record<ManagerKind, string> = {
+  bug: 'Bug manager',
+  issue: 'Issue manager',
+  merge: 'Merge manager',
+  schedule: 'Schedule manager',
+};
+
+/** Kinds whose count is what needs you: always peach, read as "need you". */
+function countsNeeds(kind: ManagerKind): boolean {
+  return kind === 'merge' || kind === 'schedule';
+}
 
 /** The states a kind can take. */
 export function managerStates(kind: ManagerKind): readonly ManagerState[] {
-  return kind === 'merge' ? MERGE_STATES : INBOX_STATES;
+  if (kind === 'merge') return MERGE_STATES;
+  if (kind === 'schedule') return SCHEDULE_STATES;
+  return INBOX_STATES;
 }
 
 /** The pose actually drawn: an urgent Issue manager holds its ticket up like an unread one. */
@@ -63,7 +87,7 @@ export interface CountTag {
   shown: boolean;
   /** What it says: the count, or `99+` past that. */
   text: string;
-  /** Peach: an urgent Bug manager's count, and the Merge manager's always. */
+  /** Peach: an urgent Bug manager's count, and the Merge and Schedule managers' always. */
   hot: boolean;
 }
 
@@ -72,7 +96,7 @@ export function countTag(scene: ManagerScene): CountTag {
   return {
     shown: n > 0,
     text: n > 99 ? '99+' : String(n),
-    hot: n > 0 && (scene.kind === 'merge' || (scene.kind === 'bug' && scene.state === 'urgent')),
+    hot: n > 0 && (countsNeeds(scene.kind) || (scene.kind === 'bug' && scene.state === 'urgent')),
   };
 }
 
@@ -84,7 +108,7 @@ export function managerLabel(scene: ManagerScene): string {
 export function managerName(scene: ManagerScene): string {
   const tag = countTag(scene);
   if (!tag.shown) return managerLabel(scene);
-  if (scene.kind === 'merge') return `${managerLabel(scene)}, ${tag.text} ${tag.text === '1' ? 'needs' : 'need'} you`;
+  if (countsNeeds(scene.kind)) return `${managerLabel(scene)}, ${tag.text} ${tag.text === '1' ? 'needs' : 'need'} you`;
   return `${managerLabel(scene)}, ${tag.text} unread`;
 }
 
