@@ -202,7 +202,7 @@ interface FamilyMember {
 
 ## The managers
 
-Three more Patches with a job. Two for a host that keeps an inbox: the **Bug manager** (lavender, an explorer in a pith helmet with a satchel) and the **Issue manager** (sun yellow, a bookkeeper with round spectacles, a green visor and a pencil behind its head), each with three states and an unread tag. And one for a host that lands pull requests: the **Merge manager** (sky blue, a signaller in a navy peaked cap with a sun band, a whistle and a flag), with four states and a tag for what needs you.
+Four more Patches with a job. Two for a host that keeps an inbox: the **Bug manager** (lavender, an explorer in a pith helmet with a satchel) and the **Issue manager** (sun yellow, a bookkeeper with round spectacles, a green visor and a pencil behind its head), each with three states and an unread tag. And one for a host that lands pull requests: the **Merge manager** (sky blue, a signaller in a navy peaked cap with a sun band, a whistle and a flag), with four states and a tag for what needs you. And one for a host that runs scheduled tasks: the **Schedule manager** (sage, a gentle Father Time with a short white beard and brows, a gold-rimmed monocle and a small wooden hourglass), with three states and a tag for the runs that need you.
 
 ```ts
 import { mountManager } from '@jblaak/patch';
@@ -225,12 +225,16 @@ bugs.show({ kind: 'bug', state: 'urgent', count: 5, label: 'Bug manager' });
 | --- | --- | --- | --- | --- |
 | `merge` | nothing landed: the flag furled at its side | a head updating, testing or merging: the green flag waving | something needs you: the peach flag raised, smiling as it asks | a VM merges: the radio to its face (the host draws the badge naming the VM) |
 
-- **Count.** `count` draws the unread tag in the top corner, `99+` past 99. It hides at 0, and turns peach for an urgent Bug manager. The Merge manager's count is what needs you, always peach; a busy lane shows in the pose, not a number.
-- **Label.** Shown under the figure, as text; defaults to "Bug manager", "Issue manager" or "Merge manager". The accessible name is the label plus the count ("2 unread", or "2 need you" for the Merge manager).
-- **Width.** `--patch-manager-width` (default `150px`) sets how wide the figure is drawn.
-- **Reduced motion.** No dangling, scurrying, flailing, waving or bobbing; the poses hold still.
+| Kind | `calm` | `running` | `needsYou` |
+| --- | --- | --- | --- |
+| `schedule` | every run went fine or has been seen: smiling, the hourglass standing at rest beside it | a run is going: the hourglass held up by its head, sand trickling, glancing up at it | a run failed, hit its limit or was missed: worried brows and a sweat drop, the monocle popped out on its cord, the run-out hourglass held out |
 
-`managerClasses(scene)`, `countTag(scene)` and `managerName(scene)` are the pure parts, `managerStates(kind)` lists the states a kind takes (`INBOX_STATES` or `MERGE_STATES`), and `managerArt(kind)` returns the SVG. Colours are custom properties on `.patch-manager`: `--patch-bug-body`, `--patch-issue-body`, `--patch-merge-body`, the kit colours (`--patch-helmet`, `--patch-satchel`, `--patch-spider`, `--patch-visor`, `--patch-ledger`, `--patch-paper`, `--patch-cap`, `--patch-flag-go`, `--patch-flag-ask`, `--patch-radio`, …) and the tag's (`--patch-count-bg`, `--patch-count-text`, `--patch-count-hot-bg`, `--patch-count-hot-text`, `--patch-label`); see `src/manager.css` for the full list and their dark defaults. `npm run preview:managers` serves `preview/managers.html`, every kind and state; add `?theme=light` for a light host.
+- **Count.** `count` draws the unread tag in the top corner, `99+` past 99. It hides at 0, and turns peach for an urgent Bug manager. The Merge manager's count is what needs you, always peach; a busy lane shows in the pose, not a number. The Schedule manager's count is the runs that need you, peach too; a run going shows in the pose.
+- **Label.** Shown under the figure, as text; defaults to "Bug manager", "Issue manager", "Merge manager" or "Schedule manager". The accessible name is the label plus the count ("2 unread", or "2 need you" for the Merge and Schedule managers).
+- **Width.** `--patch-manager-width` (default `150px`) sets how wide the figure is drawn.
+- **Reduced motion.** No dangling, scurrying, flailing, waving, trickling or bobbing; the poses hold still.
+
+`managerClasses(scene)`, `countTag(scene)` and `managerName(scene)` are the pure parts, `managerStates(kind)` lists the states a kind takes (`INBOX_STATES`, `MERGE_STATES` or `SCHEDULE_STATES`), and `managerArt(kind)` returns the SVG. Colours are custom properties on `.patch-manager`: `--patch-bug-body`, `--patch-issue-body`, `--patch-merge-body`, `--patch-schedule-body`, the kit colours (`--patch-helmet`, `--patch-satchel`, `--patch-spider`, `--patch-visor`, `--patch-ledger`, `--patch-paper`, `--patch-cap`, `--patch-flag-go`, `--patch-flag-ask`, `--patch-radio`, `--patch-beard`, `--patch-monocle`, `--patch-hourglass`, `--patch-sand`, …) and the tag's (`--patch-count-bg`, `--patch-count-text`, `--patch-count-hot-bg`, `--patch-count-hot-text`, `--patch-label`); see `src/manager.css` for the full list and their dark defaults. `npm run preview:managers` serves `preview/managers.html`, every kind and state; add `?theme=light` for a light host.
 
 ## Theming
 

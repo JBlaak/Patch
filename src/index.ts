@@ -304,6 +304,7 @@ export {
   INBOX_STATES,
   MANAGER_KINDS,
   MERGE_STATES,
+  SCHEDULE_STATES,
 } from './manager/index';
 export type {
   CountTag,
@@ -314,4 +315,5 @@ export type {
   ManagerScene,
   ManagerState,
   MergeState,
+  ScheduleState,
 } from './manager/index';

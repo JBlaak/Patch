@@ -12,8 +12,9 @@ export {
   INBOX_STATES,
   MANAGER_KINDS,
   MERGE_STATES,
+  SCHEDULE_STATES,
 } from './scene';
-export type { CountTag, InboxState, ManagerKind, ManagerScene, ManagerState, MergeState } from './scene';
+export type { CountTag, InboxState, ManagerKind, ManagerScene, ManagerState, MergeState, ScheduleState } from './scene';
 
 export interface ManagerOptions {
   /**
@@ -34,7 +35,7 @@ export interface ManagerHandle {
 }
 
 /**
- * Mount a manager Patch (the Bug manager, the Issue manager or the Merge manager) into
+ * Mount a manager Patch (the Bug, Issue, Merge or Schedule manager) into
  * `container`. Nothing shows until the first `show`.
  * Remember to include `@jblaak/patch/manager.css`.
  */
